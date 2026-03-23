@@ -7,7 +7,6 @@
 > **Empowering your financial future with ML-driven insights and AI-powered advisory.**
 
 AI Financial Advisor Hero Banner<img width="1845" height="857" alt="image" src="https://github.com/user-attachments/assets/13865086-d26a-4f19-a670-52b33e1ce651" />
-*(Placeholder: Add a screenshot of your Landing Page here)*
 
 ---
 
@@ -26,7 +25,6 @@ Get advice that fits your mood. Switch between three distinct AI personalities:
 - **✨ Gen-Z Mode**: Speak the language of the future (Slay, Sigma, No Cap).
 
 Chat Interface Screenshot<img width="1846" height="897" alt="image" src="https://github.com/user-attachments/assets/7d620b15-606b-4265-957e-c3ab25019698" />
-*(Placeholder: Add a screenshot of the Chat Page with persona selector here)*
 
 ### 2. 📊 Smart Financial tools
 - **🔮 Term Deposit Prediction**: Uses a custom-trained ML model to predict your likelihood of successful investments.
@@ -35,7 +33,6 @@ Chat Interface Screenshot<img width="1846" height="897" alt="image" src="https:/
 Deposit Form Screenshot<img width="1790" height="888" alt="image" src="https://github.com/user-attachments/assets/e1f91145-0d11-4658-9a5a-7b8cbb73244c" />
 Rish Assessment Form Screenshot<img width="1731" height="830" alt="image" src="https://github.com/user-attachments/assets/28ae63fc-3829-48b0-8f53-f5cd0d2dd1ef" />
 
-*(Placeholder: Add a screenshot of the Risk or Deposit forms here)*
 
 ### 3. 🔐 Enterprise-Grade Security
 - **Google Authentication**: Powered by Firebase for seamless and secure access.
@@ -115,4 +112,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-**Built with ❤️ by [Rpratap](https://github.com/rpratap2111)**
+Built with ❤️ by **Rudra Pratap**  
+- GitHub: [@rudra-pratap](https://github.com/rpratap2111/)
+- LinkedIn: [Rudra Pratap](https://www.linkedin.com/in/rudra-pratap-a34a6b275/)
