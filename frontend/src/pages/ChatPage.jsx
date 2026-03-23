@@ -162,44 +162,37 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="flex bg-[#0b0f19] text-white h-screen pt-[72px] overflow-hidden">
+    <div className="flex bg-[#0b0f19] text-white h-screen pt-[72px] overflow-hidden relative">
       
-      {/* Mobile Sidebar Toggle */}
-      <button 
-        className="md:hidden absolute top-20 left-4 z-50 p-2 bg-gray-800 rounded-lg shadow-lg"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-      </button>
-
-      {/* Sidebar */}
-      <div className={`fixed md:relative z-40 h-full w-72 bg-[#111827] border-r border-gray-800 flex flex-col p-4 transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
+      {/* Sidebar - Backdrop Blur & Mobile Slide-in */}
+      <div className={`fixed md:relative z-40 h-[calc(100vh-72px)] w-80 bg-[#111827]/95 backdrop-blur-2xl border-r border-gray-800/50 flex flex-col p-6 transition-all duration-500 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
         <button 
           onClick={startNewChat}
-          className="w-full flex items-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold transition-colors mb-6 shadow-lg shadow-indigo-500/20"
+          className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-2xl font-bold transition-all mb-8 shadow-xl shadow-indigo-500/20 active:scale-95 group"
         >
-          <span className="text-xl">+</span> New Chat
+          <span className="text-2xl group-hover:rotate-90 transition-transform duration-300">+</span> 
+          <span className="text-sm tracking-wide">New Session</span>
         </button>
 
-        <div className="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">Previous Chats</div>
+        <div className="text-[10px] font-black text-gray-500 mb-4 px-2 uppercase tracking-[0.3em]">History</div>
         
-        <div className="flex-1 overflow-y-auto space-y-1 pr-2 scroller">
+        <div className="flex-1 overflow-y-auto space-y-3 pr-2 scroller">
           {sessions.length === 0 ? (
-            <div className="text-sm text-gray-500 italic px-2">No history yet</div>
+            <div className="text-sm text-gray-500 italic px-4 py-10 text-center bg-gray-900/40 rounded-3xl border border-gray-800/30">No history yet</div>
           ) : (
             sessions.map((session) => (
               <div 
                 key={session.id}
                 onClick={() => loadSession(session.id)}
-                className={`group flex items-center justify-between px-3 py-3 rounded-lg cursor-pointer transition-colors text-sm ${currentSessionId === session.id ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'}`}
+                className={`group flex items-center justify-between px-4 py-4 rounded-2xl cursor-pointer transition-all border ${currentSessionId === session.id ? 'bg-indigo-600/10 border-indigo-500/40 text-white shadow-lg' : 'text-gray-400 border-transparent hover:bg-gray-800/50 hover:text-gray-200'}`}
               >
-                <div className="flex items-center gap-2 overflow-hidden">
-                  <span className="truncate">{session.title}</span>
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className={`w-1.5 h-1.5 rounded-full ${currentSessionId === session.id ? 'bg-indigo-400' : 'bg-gray-700'}`}></div>
+                  <span className="truncate text-xs font-semibold">{session.title}</span>
                 </div>
-                {/* Delete Button */}
                 <button 
                   onClick={(e) => deleteSession(e, session.id)}
-                  className="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                  className="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-xl hover:bg-red-500/10"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
@@ -210,85 +203,107 @@ const ChatPage = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col items-center p-4 md:p-6 w-full max-w-5xl mx-auto h-[calc(100vh-72px)]">
+      <div className="flex-1 flex flex-col items-center w-full max-w-5xl mx-auto h-[calc(100vh-72px)] overflow-hidden">
         
-        {/* Persona Selector Header */}
-        <div className="w-full flex flex-col md:flex-row justify-between items-center mb-4 gap-4 pl-12 md:pl-0">
-          <AnimatePresence mode="wait">
-            <motion.h2 
-              key={persona}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.3 }}
-              className={`text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${themeColors[persona]}`}
+        {/* Header with Sidebar Toggle & Persona Selector */}
+        <div className="w-full h-16 md:h-20 flex items-center justify-between px-4 md:px-0 gap-3 border-b border-gray-800/30 md:border-none">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <button 
+              className="md:hidden p-2.5 bg-gray-800/80 rounded-xl border border-gray-700 hover:bg-gray-700 transition-colors"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              {persona === 'professional' ? "AI Financial Assistant" : 
-               persona === 'savage' ? "🔥 Savage Roast Mode" : 
-               "✨ Gen-Z Finance"}
-            </motion.h2>
-          </AnimatePresence>
-          <div className="flex space-x-1 sm:space-x-2 bg-gray-900 p-1.5 rounded-full border border-gray-800 shadow-lg">
-            <button onClick={() => setPersona('professional')} className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all ${persona === 'professional' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}>Professional</button>
-            <button onClick={() => setPersona('savage')} className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all ${persona === 'savage' ? 'bg-red-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}>Savage</button>
-            <button onClick={() => setPersona('genz')} className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all ${persona === 'genz' ? 'bg-purple-600 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}>Gen-Z</button>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+            <AnimatePresence mode="wait">
+              <motion.h2 
+                key={persona}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                className={`text-base md:text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r ${themeColors[persona]} truncate`}
+              >
+                {persona === 'professional' ? "AI Assistant" : 
+                 persona === 'savage' ? "Roast Mode" : 
+                 "Gen-Z Mode"}
+              </motion.h2>
+            </AnimatePresence>
+          </div>
+
+          <div className="flex bg-gray-900/80 p-1 rounded-full border border-gray-800/50 shadow-inner scale-90 md:scale-100 origin-right">
+            {(['professional', 'savage', 'genz']).map((p) => (
+              <button 
+                key={p}
+                onClick={() => setPersona(p)} 
+                className={`px-3 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold transition-all duration-300 ${persona === p ? `${bubbleColors[p]} text-white shadow-xl scale-105` : 'text-gray-500 hover:text-gray-300'}`}
+              >
+                {p.charAt(0).toUpperCase() + p.slice(1)}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Chat Box */}
-        <div className={`w-full flex-1 bg-gray-900/40 backdrop-blur-md border border-gray-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden transition-all duration-500`}>
+        {/* Chat Box - More Modern Bubble Styles */}
+        <div className="w-full flex-1 flex flex-col overflow-hidden relative group">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none z-10"></div>
           
-          <div ref={scrollRef} className="flex-1 p-4 md:p-6 overflow-y-auto space-y-5 scroller">
+          <div ref={scrollRef} className="flex-1 p-4 md:p-8 overflow-y-auto space-y-6 scroller scroll-smooth">
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div key={idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-[90%] md:max-w-[75%] px-5 py-4 rounded-3xl text-sm md:text-base leading-relaxed shadow-sm transition-colors duration-500 ease-in-out ${
+                  className={`max-w-[88%] md:max-w-[80%] px-5 py-4 rounded-[2.5rem] text-sm md:text-base leading-relaxed shadow-lg transition-all duration-500 ${
                     msg.role === "user" 
-                      ? `${bubbleColors[persona]} text-white rounded-br-sm` 
-                      : "bg-[#1f2937] text-gray-200 border border-gray-700/50 rounded-bl-sm markdown-body prose prose-invert max-w-none"
+                      ? `${bubbleColors[persona]} text-white rounded-br-none border-b-2 border-r-2 border-white/10` 
+                      : "bg-gray-800/50 text-gray-200 border border-white/5 rounded-bl-none backdrop-blur-sm markdown-body prose prose-invert max-w-none"
                   }`}
                 >
-                  {msg.role === "user" ? msg.text : <ReactMarkdown>{msg.text}</ReactMarkdown>}
+                  {msg.role === "user" ? (
+                    <span className="font-medium tracking-wide">{msg.text}</span>
+                  ) : (
+                    <div className="opacity-90"><ReactMarkdown>{msg.text}</ReactMarkdown></div>
+                  )}
                 </div>
               </div>
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-[#1f2937] border border-gray-700/50 p-4 rounded-3xl rounded-bl-sm flex items-center space-x-2 h-12 px-6">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-300"></div>
+                <div className="bg-gray-800/50 border border-white/5 p-4 rounded-3xl rounded-bl-none flex items-center space-x-2 h-14 px-8 backdrop-blur-sm">
+                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-100"></div>
+                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce delay-200"></div>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="p-4 md:p-6 bg-gray-900/80 border-t border-gray-800 relative">
-            {messages.length === 1 && (
-              <div className="absolute bottom-[110%] left-0 w-full flex flex-wrap justify-center gap-2 p-2">
+          <div className="p-4 md:p-8 bg-black/40 backdrop-blur-2xl border-t border-white/5">
+            {messages.length === 1 && !input && (
+              <div className="flex flex-wrap justify-center gap-2 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
                 {suggestedPrompts.map((p, i) => (
                   <button
                     key={i}
                     onClick={() => setInput(p)}
-                    className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-full transition-colors border border-gray-700 shadow-lg"
+                    className="text-[10px] md:text-xs bg-gray-800/60 hover:bg-indigo-600/40 hover:border-indigo-500/50 text-gray-300 px-4 py-2 rounded-full transition-all border border-gray-700/50"
                   >
                     {p}
                   </button>
                 ))}
               </div>
             )}
-            <form onSubmit={handleSend} className="flex space-x-3 w-full max-w-4xl mx-auto">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask your financial advisor anything..."
-                className="flex-1 bg-gray-800/80 border border-gray-700 text-white rounded-2xl px-5 py-4 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-inner"
-              />
+
+            <form onSubmit={handleSend} className="flex gap-3 w-full max-w-4xl mx-auto items-center">
+              <div className="flex-1 relative group">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your message..."
+                  className="w-full bg-gray-800/40 border border-white/10 text-white rounded-2xl px-6 py-4 md:py-5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all shadow-2xl placeholder:text-gray-500 text-sm md:text-base"
+                />
+              </div>
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="relative overflow-hidden text-white font-bold py-4 px-6 md:px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center"
+                className="relative overflow-hidden w-14 h-14 md:w-auto md:px-10 md:h-[62px] rounded-2xl shadow-2xl transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale group flex items-center justify-center font-black uppercase tracking-widest text-xs md:text-sm"
               >
                 <AnimatePresence>
                   <motion.div
@@ -297,18 +312,31 @@ const ChatPage = () => {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5 }}
-                    className={`absolute inset-0 bg-gradient-to-r ${themeColors[persona]}`}
+                    className={`absolute inset-0 bg-gradient-to-br ${themeColors[persona]}`}
                   />
                 </AnimatePresence>
-                <span className="relative z-10 flex items-center justify-center w-full h-full">Send</span>
+                <span className="relative z-10 flex items-center gap-2 text-white">
+                  <span className="hidden md:block">Send Message</span>
+                  <svg className="w-5 h-5 md:w-4 md:h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </span>
               </button>
             </form>
           </div>
         </div>
       </div>
       
-      {/* Overlay for mobile sidebar */}
-      {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSidebarOpen(false)}></div>}
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden" 
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

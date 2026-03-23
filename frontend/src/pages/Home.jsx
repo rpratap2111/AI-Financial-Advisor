@@ -6,25 +6,25 @@ function Home() {
   const { user, loginWithGoogle } = useAuth();
 
   return (
-    <div className="pt-24 flex flex-col items-center min-h-[90vh] text-center px-6">
+    <div className="pt-20 md:pt-24 flex flex-col items-center min-h-screen text-center px-4 md:px-6">
       
       {/* HERO SECTION */}
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="max-w-4xl mt-16"
+        className="max-w-4xl mt-12 md:mt-16 w-full"
       >
-        <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-sm font-semibold tracking-wide">
+        <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs md:text-sm font-semibold tracking-wide">
           ✨ The Future of Wealth Management
         </div>
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-          Your Smart <br className="hidden md:block"/>
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
+          Your Smart <br className="hidden sm:block"/>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400">
             AI Financial Advisor
           </span>
         </h1>
-        <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-base md:text-xl text-gray-400 mb-8 md:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
           Unlock personalized investment strategies, dual-perspective risk assessments, 
           and butterfly-effect deposit predictions powered by next-generation Generative AI.
         </p>
@@ -34,25 +34,37 @@ function Home() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={loginWithGoogle}
-            className="px-8 py-4 rounded-full bg-white text-black font-bold text-lg shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.5)] transition-all flex items-center justify-center gap-3 mx-auto"
+            className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-black font-bold text-lg shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transition-all flex items-center justify-center gap-3 mx-auto"
           >
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
             Continue with Google
           </motion.button>
         ) : (
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/deposit">
-              <motion.button whileHover={{ scale: 1.05 }} className="px-8 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-500/20">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 px-4 w-full max-w-lg mx-auto">
+            <Link to="/deposit" className="w-full">
+              <motion.button 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }}
+                className="w-full px-6 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-500/20 text-sm md:text-base"
+              >
                 Deposit Prediction
               </motion.button>
             </Link>
-            <Link to="/risk">
-              <motion.button whileHover={{ scale: 1.05 }} className="px-8 py-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold shadow-lg shadow-cyan-500/20">
+            <Link to="/risk" className="w-full">
+              <motion.button 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }}
+                className="w-full px-6 py-4 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold shadow-lg shadow-cyan-500/20 text-sm md:text-base"
+              >
                 Risk Assessment
               </motion.button>
             </Link>
-            <Link to="/chat">
-              <motion.button whileHover={{ scale: 1.05 }} className="px-8 py-4 rounded-xl bg-gray-800 border border-gray-600 hover:bg-gray-700 text-white font-bold shadow-lg">
+            <Link to="/chat" className="w-full">
+              <motion.button 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }}
+                className="w-full px-6 py-4 rounded-2xl bg-gray-800 border border-white/10 hover:bg-gray-700 text-white font-bold shadow-lg text-sm md:text-base"
+              >
                 AI Chat
               </motion.button>
             </Link>

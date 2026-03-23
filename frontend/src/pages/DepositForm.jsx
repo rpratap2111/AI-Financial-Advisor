@@ -67,65 +67,71 @@ const DepositForm = () => {
         <p className="text-indigo-200/80 text-sm mb-2">Along with standard mathematical ML predictions for term deposits, our Generative AI will analyze your specific inputs to find the <strong>exact 1 or 2 small hypothetical changes</strong> that would completely flip your financial trajectory.</p>
       </div>
 
-      <h2 className="text-2xl font-bold mb-4">Deposit Recommendation</h2>
+      <h2 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+        Deposit Prediction
+      </h2>
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-900 shadow-lg rounded-xl p-6 w-full max-w-md space-y-4"
+        className="bg-gray-900/50 backdrop-blur-xl border border-gray-800 shadow-2xl rounded-3xl p-6 md:p-8 w-full max-w-xl space-y-4"
       >
-        <input
-          type="number"
-          name="age"
-          placeholder="Age"
-          value={formData.age}
-          onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 text-white"
-          required
-        />
-
-        <select
-          name="job"
-          value={formData.job}
-          onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 text-white"
-          required
-        >
-          <option value="">Select Job</option>
-          <option value="management">Management</option>
-          <option value="blue-collar">Blue Collar</option>
-          <option value="technician">Technician</option>
-          <option value="student">Student</option>
-          <option value="self-employed">Self Employed</option>
-        </select>
-
-        <select
-          name="marital"
-          value={formData.marital}
-          onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 text-white"
-          required
-        >
-          <option value="">Marital Status</option>
-          <option value="single">Single</option>
-          <option value="married">Married</option>
-          <option value="divorced">Divorced</option>
-        </select>
-
-        <div>
-          <select
-            name="education"
-            value={formData.education}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            type="number"
+            name="age"
+            placeholder="Age"
+            value={formData.age}
             onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-800 text-white"
+            className="w-full p-3 rounded-xl bg-gray-800/80 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+
+          <select
+            name="job"
+            value={formData.job}
+            onChange={handleChange}
+            className="w-full p-3 rounded-xl bg-gray-800/80 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
             required
           >
-            <option value="">Education</option>
-            <option value="primary">Primary</option>
-            <option value="secondary">Secondary</option>
-            <option value="tertiary">Tertiary</option>
+            <option value="">Select Job</option>
+            <option value="management">Management</option>
+            <option value="blue-collar">Blue Collar</option>
+            <option value="technician">Technician</option>
+            <option value="student">Student</option>
+            <option value="self-employed">Self Employed</option>
           </select>
-          <p className="text-xs text-gray-400 mt-1 ml-1">
-            <b>Primary</b>: Up to 8th Grade | <b>Secondary</b>: High School | <b>Tertiary</b>: College/University
-          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <select
+            name="marital"
+            value={formData.marital}
+            onChange={handleChange}
+            className="w-full p-3 rounded-xl bg-gray-800/80 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">Marital Status</option>
+            <option value="single">Single</option>
+            <option value="married">Married</option>
+            <option value="divorced">Divorced</option>
+          </select>
+
+          <div className="space-y-1">
+            <select
+              name="education"
+              value={formData.education}
+              onChange={handleChange}
+              className="w-full p-3 rounded-xl bg-gray-800/80 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Education</option>
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="tertiary">Tertiary</option>
+            </select>
+            <p className="text-[10px] text-gray-500 px-1 leading-tight">
+              <b>Primary</b>: &lt;8th | <b>Secondary</b>: High School | <b>Tertiary</b>: Degree
+            </p>
+          </div>
         </div>
 
         <input
@@ -134,7 +140,7 @@ const DepositForm = () => {
           placeholder="Account Balance (₹)"
           value={formData.balance}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 text-white"
+          className="w-full p-4 rounded-xl bg-gray-800/80 border border-gray-700 text-white outline-none focus:ring-2 focus:ring-blue-500 text-lg font-medium"
           required
         />
 
@@ -142,9 +148,9 @@ const DepositForm = () => {
           name="investment_preference"
           value={formData.investment_preference}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-gray-800 text-white focus:ring-2 focus:ring-indigo-500 border border-gray-700"
+          className="w-full p-3 rounded-xl bg-gray-800/80 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 outline-none"
         >
-          <option value="">Where do you invest? (Optional)</option>
+          <option value="">Investment Preference (Optional)</option>
           <option value="stocks">Stock Market</option>
           <option value="crypto">Cryptocurrency</option>
           <option value="real_estate">Real Estate</option>
@@ -155,9 +161,9 @@ const DepositForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-white font-bold disabled:opacity-50 transition-opacity"
+          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 py-4 rounded-2xl text-white font-bold text-lg disabled:opacity-50 transition-all shadow-xl active:scale-95"
         >
-          {loading ? "Analyzing..." : "Predict"}
+          {loading ? "Analyzing Factors..." : "Generate Prediction"}
         </button>
       </form>
 

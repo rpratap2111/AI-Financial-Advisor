@@ -100,56 +100,66 @@ const RiskForm = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-        <div className="col-span-2 font-semibold text-lg text-blue-400">User Info</div>
-        <input name="LIMIT_BAL" type="number" value={formData.LIMIT_BAL} onChange={handleChange} placeholder="Credit Limit (₹ e.g. 200000)" className="p-2 rounded bg-gray-800" />
-        <select name="SEX" value={formData.SEX} onChange={handleChange} className="p-2 rounded bg-gray-800">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2 sm:px-0">
+        <div className="col-span-1 sm:col-span-2 font-semibold text-lg text-blue-400">User Info</div>
+        <input name="LIMIT_BAL" type="number" value={formData.LIMIT_BAL} onChange={handleChange} placeholder="Credit Limit (₹)" className="p-3 rounded-xl bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none" />
+        <select name="SEX" value={formData.SEX} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
           <option value="">Select Gender</option>
           <option value={1}>Male</option>
           <option value={2}>Female</option>
         </select>
-        <select name="EDUCATION" value={formData.EDUCATION} onChange={handleChange} className="p-2 rounded bg-gray-800">
+        <select name="EDUCATION" value={formData.EDUCATION} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
           <option value="">Select Education</option>
           <option value={1}>Graduate School</option>
           <option value={2}>University</option>
           <option value={3}>High School</option>
           <option value={4}>Others</option>
         </select>
-        <select name="MARRIAGE" value={formData.MARRIAGE} onChange={handleChange} className="p-2 rounded bg-gray-800">
+        <select name="MARRIAGE" value={formData.MARRIAGE} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
           <option value="">Select Marital Status</option>
           <option value={1}>Married</option>
           <option value={2}>Single</option>
           <option value={3}>Others</option>
         </select>
-        <input name="AGE" type="number" value={formData.AGE} onChange={handleChange} placeholder="Age" className="p-2 rounded bg-gray-800" />
+        <input name="AGE" type="number" value={formData.AGE} onChange={handleChange} placeholder="Age" className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none col-span-1 sm:col-span-2" />
 
-        <div className="col-span-2 font-semibold text-lg text-blue-400 mt-4">Payment History</div>
-        {["PAY_0", "PAY_2", "PAY_3", "PAY_4", "PAY_5", "PAY_6"].map((field) => (
-          <select key={field} name={field} value={formData[field]} onChange={handleChange} className="p-2 rounded bg-gray-800">
-            <option value="">Select {field}</option>
-            <option value={-1}>Paid Duly</option>
-            <option value={0}>No Delay</option>
-            <option value={1}>Delay 1 Month</option>
-            <option value={2}>Delay 2 Months</option>
-            <option value={3}>Delay 3 Months</option>
-            <option value={4}>Delay 4 Months</option>
-            <option value={5}>Delay 5 Months</option>
-            <option value={6}>Delay 6 Months</option>
-          </select>
-        ))}
+        <div className="col-span-1 sm:col-span-2 font-semibold text-lg text-blue-400 mt-6">Payment History</div>
+        <div className="grid grid-cols-1 gap-4 col-span-1 sm:col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {["PAY_0", "PAY_2", "PAY_3", "PAY_4", "PAY_5", "PAY_6"].map((field) => (
+              <select key={field} name={field} value={formData[field]} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
+                <option value="">Select {field}</option>
+                <option value={-1}>Paid Duly</option>
+                <option value={0}>No Delay</option>
+                <option value={1}>Delay 1 Month</option>
+                <option value={2}>Delay 2 Months</option>
+                <option value={3}>Delay 3 Months</option>
+                <option value={4}>Delay 4 Months</option>
+                <option value={5}>Delay 5 Months</option>
+                <option value={6}>Delay 6 Months</option>
+              </select>
+            ))}
+          </div>
+        </div>
 
-        <div className="col-span-2 font-semibold text-lg text-blue-400 mt-4">Bills</div>
-        {["BILL_AMT1", "BILL_AMT2", "BILL_AMT3", "BILL_AMT4", "BILL_AMT5", "BILL_AMT6"].map((field) => (
-          <input key={field} name={field} type="number" value={formData[field]} onChange={handleChange} placeholder={`${field} (₹ e.g. 50000)`} className="p-2 rounded bg-gray-800" />
-        ))}
+        <div className="col-span-1 sm:col-span-2 font-semibold text-lg text-blue-400 mt-6">Bills & Payments</div>
+        <div className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest px-1">Bill Amounts</h4>
+            {["BILL_AMT1", "BILL_AMT2", "BILL_AMT3", "BILL_AMT4", "BILL_AMT5", "BILL_AMT6"].map((field) => (
+              <input key={field} name={field} type="number" value={formData[field]} onChange={handleChange} placeholder={`${field}`} className="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none" />
+            ))}
+          </div>
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest px-1">Payment History</h4>
+            {["PAY_AMT1", "PAY_AMT2", "PAY_AMT3", "PAY_AMT4", "PAY_AMT5", "PAY_AMT6"].map((field) => (
+              <input key={field} name={field} type="number" value={formData[field]} onChange={handleChange} placeholder={`${field}`} className="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none" />
+            ))}
+          </div>
+        </div>
 
-        <div className="col-span-2 font-semibold text-lg text-blue-400 mt-4">Payments</div>
-        {["PAY_AMT1", "PAY_AMT2", "PAY_AMT3", "PAY_AMT4", "PAY_AMT5", "PAY_AMT6"].map((field) => (
-          <input key={field} name={field} type="number" value={formData[field]} onChange={handleChange} placeholder={`${field} (₹ e.g. 4000)`} className="p-2 rounded bg-gray-800" />
-        ))}
-
-        <button type="submit" disabled={loading} className="col-span-2 mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-50 transition-opacity">
-          {loading ? "Analyzing Context & Calculating Risk..." : "Predict Risk"}
+        <button type="submit" disabled={loading} className="col-span-1 sm:col-span-2 mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl disabled:opacity-50 transition-all shadow-lg active:scale-95">
+          {loading ? "Analyzing Financial Context..." : "Calculate Risk Assessment"}
         </button>
       </form>
 
