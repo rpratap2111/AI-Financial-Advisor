@@ -6,8 +6,7 @@
 
 > **Empowering your financial future with ML-driven insights and AI-powered advisory.**
 
-![AI Financial Advisor Hero Banner](<img width="1845" height="857" alt="image" src="https://github.com/user-attachments/assets/13865086-d26a-4f19-a670-52b33e1ce651" />
-)
+![AI Financial Advisor Hero Banner]<img width="1845" height="857" alt="image" src="https://github.com/user-attachments/assets/13865086-d26a-4f19-a670-52b33e1ce651" />
 *(Placeholder: Add a screenshot of your Landing Page here)*
 
 ---
@@ -26,8 +25,7 @@ Get advice that fits your mood. Switch between three distinct AI personalities:
 - **🔥 Savage Mode**: Doesn't hold back—get roasted for your spending habits!
 - **✨ Gen-Z Mode**: Speak the language of the future (Slay, Sigma, No Cap).
 
-![Chat Interface Screenshot](<img width="1846" height="897" alt="image" src="https://github.com/user-attachments/assets/7d620b15-606b-4265-957e-c3ab25019698" />
-)
+![Chat Interface Screenshot]<img width="1846" height="897" alt="image" src="https://github.com/user-attachments/assets/7d620b15-606b-4265-957e-c3ab25019698" />
 *(Placeholder: Add a screenshot of the Chat Page with persona selector here)*
 
 ### 2. 📊 Smart Financial tools
