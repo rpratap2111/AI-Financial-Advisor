@@ -97,7 +97,12 @@ The application is architected for modern cloud platforms:
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is licensed under the **MIT License** – see the [LICENSE](./LICENSE) file for details.
+MIT License
+
+Copyright (c) 2026 Rudra Pratap
+
+Permission is hereby granted, free of charge, to any person obtaining a copy...
 
 ---
 
