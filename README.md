@@ -40,7 +40,7 @@ A comprehensive AI-powered financial advisory platform featuring ML-driven inves
 ### Frontend Setup
 1. `cd frontend`
 2. `npm install`
-3. Create a `.env.local` using the `.env.example` template.
+3. Create a `.env.local`.
 4. `npm run dev`
 
 ## 🌍 Deployment Ready
