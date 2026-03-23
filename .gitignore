@@ -1,0 +1,22 @@
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project-specific ignores
+node_modules/
+backend/__pycache__/
+frontend/dist/
+frontend/build/
+*.py[cod]
+.env
+.env.local
