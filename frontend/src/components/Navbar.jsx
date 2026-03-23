@@ -6,7 +6,10 @@ function Navbar() {
 
   return (
     <nav className="flex justify-between items-center px-8 py-4 bg-black/30 backdrop-blur-md fixed w-full z-50 border-b border-gray-800">
-      <Link to="/" className="text-xl font-bold text-indigo-400 tracking-wider">AI Advisor</Link>
+      <Link to="/" className="flex items-center gap-3 text-xl font-bold text-indigo-400 tracking-wider">
+        <img src="/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">AI Advisor</span>
+      </Link>
       
       <div className="flex items-center gap-8">
         <div className="flex gap-6">
