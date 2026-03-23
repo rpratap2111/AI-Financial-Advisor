@@ -1,49 +1,116 @@
-# AI Financial Advisor 🚀
+# 🏦 AI Financial Advisor - Smart Wealth Management
 
-A comprehensive AI-powered financial advisory platform featuring ML-driven investment recommendations, credit risk assessment, and a multi-persona conversational assistant. Built with React, Flask, and Google's Gemini API, integrated with Firebase for secure authentication.
+[![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge&logo=vercel)](https://ai-financial-advisor-six.vercel.app)
+[![Render](https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render)](https://ai-financial-advisor-yo5z.onrender.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+> **Empowering your financial future with ML-driven insights and AI-powered advisory.**
+
+![AI Financial Advisor Hero Banner](./public/screenshots/hero-banner.png)
+*(Placeholder: Add a screenshot of your Landing Page here)*
+
+---
+
+## 🌟 Overview
+
+AI Financial Advisor is a cutting-edge platform designed to simplify complex financial decisions. By combining **Machine Learning models** for risk and investment prediction with a **multi-persona AI chat**, it provides a unique, engaging, and highly personalized user experience.
+
+---
 
 ## ✨ Key Features
 
-- **🧠 Multi-Persona AI Chat**: Financial advice delivered through three distinct personas:
-    - **Professional**: Direct, formal, and informative.
-    - **Savage Mode**: Brutally honest, sarcastic roasting of your financial decisions.
-    - **Gen-Z Mode**: Coated in brainrot slang (Slay, Sigma, No Cap).
-- **📝 Conversational Context**: Unlike simple chatbots, the advisor remembers your previous messages in a session for smarter follow-up answers.
-- **📈 Term Deposit Prediction**: Machine Learning model that analyzes user profiles to predict and recommend high-yield term deposits.
-- **🛡️ Credit Risk Assessment**: Automated ML risk profiling to evaluate financial stability.
-- **🔐 Secure Google Sign-In**: Integrated with Firebase Authentication for personal profiles and data security.
-- **💾 Multi-Session History**: Save, load, and delete multiple chat sessions stored directly in your browser history.
-- **📱 Responsive & Animated UI**: Clean, professional landing page with smooth Framer Motion transitions and mobile compatibility.
+### 1. 🤖 Multi-Persona AI Chat
+Get advice that fits your mood. Switch between three distinct AI personalities:
+- **👔 Professional**: Data-driven, formal, and precise.
+- **🔥 Savage Mode**: Doesn't hold back—get roasted for your spending habits!
+- **✨ Gen-Z Mode**: Speak the language of the future (Slay, Sigma, No Cap).
+
+![Chat Interface Screenshot](./public/screenshots/chat-modes.png)
+*(Placeholder: Add a screenshot of the Chat Page with persona selector here)*
+
+### 2. 📊 Smart Financial tools
+- **🔮 Term Deposit Prediction**: Uses a custom-trained ML model to predict your likelihood of successful investments.
+- **🛡️ Credit Risk Assessment**: Automated evaluation of your financial stability based on key metrics.
+
+![Forms Screenshot](./public/screenshots/forms-layout.png)
+*(Placeholder: Add a screenshot of the Risk or Deposit forms here)*
+
+### 3. 🔐 Enterprise-Grade Security
+- **Google Authentication**: Powered by Firebase for seamless and secure access.
+- **Persistent Sessions**: Your chat history is saved and managed within your profile.
+
+---
 
 ## 🛠️ Tech Stack
 
-**Frontend:**
-- [React (Vite)](https://react.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Firebase Auth](https://firebase.google.com/docs/auth)
+| Frontend | Backend | Intelligence |
+| :--- | :--- | :--- |
+| **React 18** (Vite) | **Python / Flask** | **Google Gemini 2.0 Flash** |
+| **Tailwind CSS** | **Scikit-Learn** | **Firebase Auth** |
+| **Framer Motion** | **Pandas / NumPy** | **RESTful API** |
 
-**Backend:**
-- [Flask](https://flask.palletsprojects.com/)
-- [Scikit-Learn](https://scikit-learn.org/)
-- [Google Gemini API](https://ai.google.dev/) (model: `gemini-2.0-flash`)
+---
 
-## 🚀 Getting Started
+## 🚀 Installation & Local Setup
 
-### Backend Setup
-1. `cd backend`
-2. Create and activate a python virtual environment.
-3. `pip install -r requirements.txt`
-4. Create a `.env` file with `GEMINI_API_KEY`.
-5. `python app.py`
+### 📋 Prerequisites
+- Python 3.9+
+- Node.js 18+
+- Google Gemini API Key
+- Firebase Project Credentials
 
-### Frontend Setup
-1. `cd frontend`
-2. `npm install`
-3. Create a `.env.local`.
-4. `npm run dev`
+### 1. Clone the Repository
+```bash
+git clone https://github.com/rpratap2111/AI-Financial-Advisor.git
+cd AI-Financial-Advisor
+```
 
-## 🌍 Deployment Ready
-- **Frontend**: Configured for Vercel/Netlify with dynamic API endpoints.
-- **Backend**: Configured for Render/Railway with `gunicorn` and dynamic port binding.
-- **Security**: Strict CORS origin policy to prevent unauthorized API access.
+### 2. Backend Configuration
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+# Create .env with GEMINI_API_KEY and FRONTEND_URL
+python app.py
+```
+
+### 3. Frontend Configuration
+```bash
+cd frontend
+npm install
+# Create .env.local with Firebase & Vite API config
+npm run dev
+```
+
+---
+
+## 🌍 Deployment
+
+The application is architected for modern cloud platforms:
+
+- **Frontend**: Optimally deployed on **Vercel** with full CI/CD support.
+- **Backend**: Hosted on **Render** using `gunicorn` for high-performance request handling.
+- **CORS**: Strictly controlled via environment variables to ensure secure cross-origin communication.
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+**Built with ❤️ by [Rpratap](https://github.com/rpratap2111)**
