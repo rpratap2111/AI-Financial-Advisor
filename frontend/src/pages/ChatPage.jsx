@@ -2,6 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { db } from "../firebase";
+import { 
+  collection, 
+  addDoc, 
+  updateDoc, 
+  doc, 
+  query, 
+  where, 
+  getDocs, 
+  deleteDoc, 
+  orderBy,
+  serverTimestamp 
+} from "firebase/firestore";
 
 const ChatPage = () => {
   const { user } = useAuth();
@@ -35,21 +48,33 @@ const ChatPage = () => {
   const scrollRef = useRef(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Load all sessions on mount
+  // Load all sessions from Firestore on mount
   useEffect(() => {
-    if (user) {
-      const savedSessions = localStorage.getItem(`chat_sessions_${user.uid}`);
-      if (savedSessions) {
-        setSessions(JSON.parse(savedSessions));
+    const fetchSessions = async () => {
+      if (user) {
+        try {
+          const q = query(
+            collection(db, "sessions"), 
+            where("userId", "==", user.uid),
+            orderBy("updatedAt", "desc")
+          );
+          const querySnapshot = await getDocs(q);
+          const fetchedSessions = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setSessions(fetchedSessions);
+        } catch (error) {
+          console.error("Error fetching sessions:", error);
+        }
+      } else {
+        setSessions([]);
+        setMessages([defaultMessage]);
+        setCurrentSessionId(null);
       }
-    } else {
-      setSessions([]);
-      setMessages([defaultMessage]);
-      setCurrentSessionId(null);
-    }
+    };
+    fetchSessions();
   }, [user]);
-
-  const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
   const startNewChat = () => {
     setCurrentSessionId(null);
@@ -69,41 +94,63 @@ const ChatPage = () => {
     if (window.innerWidth < 768) setSidebarOpen(false);
   };
 
-  const deleteSession = (e, id) => {
+  const deleteSession = async (e, id) => {
     e.stopPropagation();
-    const newSessions = sessions.filter(s => s.id !== id);
-    setSessions(newSessions);
-    if (user) localStorage.setItem(`chat_sessions_${user.uid}`, JSON.stringify(newSessions));
-    if (currentSessionId === id) startNewChat();
+    try {
+      await deleteDoc(doc(db, "sessions", id));
+      const newSessions = sessions.filter(s => s.id !== id);
+      setSessions(newSessions);
+      if (currentSessionId === id) startNewChat();
+    } catch (error) {
+      console.error("Error deleting session:", error);
+    }
   };
 
-  const saveSession = (msgs, currentPersona) => {
+  const saveToFirestore = async (msgs, currentPersona) => {
     if (!user) return;
     
-    let sessionId = currentSessionId;
-    let newSessions = [...sessions];
-    
-    if (!sessionId) {
-      sessionId = generateId();
-      setCurrentSessionId(sessionId);
-      // Generate a title based on the user's first prompt
-      const firstUserMsg = msgs.find(m => m.role === 'user')?.text || "New Chat";
-      const title = firstUserMsg.length > 30 ? firstUserMsg.substring(0, 30) + "..." : firstUserMsg;
-      
-      newSessions.unshift({ id: sessionId, title, messages: msgs, persona: currentPersona, updatedAt: Date.now() });
-    } else {
-      const sessionIndex = newSessions.findIndex(s => s.id === sessionId);
-      if (sessionIndex !== -1) {
-        newSessions[sessionIndex].messages = msgs;
-        newSessions[sessionIndex].persona = currentPersona;
-        newSessions[sessionIndex].updatedAt = Date.now();
+    try {
+      if (!currentSessionId) {
+        // Create new session
+        const firstUserMsg = msgs.find(m => m.role === 'user')?.text || "New Chat";
+        const title = firstUserMsg.length > 30 ? firstUserMsg.substring(0, 30) + "..." : firstUserMsg;
+        
+        const docRef = await addDoc(collection(db, "sessions"), {
+          userId: user.uid,
+          title,
+          messages: msgs,
+          persona: currentPersona,
+          updatedAt: serverTimestamp()
+        });
+        
+        const newSession = { 
+          id: docRef.id, 
+          title, 
+          messages: msgs, 
+          persona: currentPersona, 
+          updatedAt: Date.now() 
+        };
+        
+        setSessions(prev => [newSession, ...prev]);
+        setCurrentSessionId(docRef.id);
+      } else {
+        // Update existing session
+        const sessionRef = doc(db, "sessions", currentSessionId);
+        await updateDoc(sessionRef, {
+          messages: msgs,
+          persona: currentPersona,
+          updatedAt: serverTimestamp()
+        });
+        
+        setSessions(prev => prev.map(s => 
+          s.id === currentSessionId 
+            ? { ...s, messages: msgs, persona: currentPersona, updatedAt: Date.now() } 
+            : s
+        ));
       }
+    } catch (error) {
+      console.error("Error saving session:", error);
     }
-    
-    // Sort so most recent is on top
-    newSessions.sort((a, b) => b.updatedAt - a.updatedAt);
-    setSessions(newSessions);
-    localStorage.setItem(`chat_sessions_${user.uid}`, JSON.stringify(newSessions));
   };
 
   useEffect(() => {
@@ -138,12 +185,12 @@ const ChatPage = () => {
         finalMessages = [...newMessages, { role: "assistant", text: `Error: ${data.error}` }];
       }
       setMessages(finalMessages);
-      saveSession(finalMessages, persona);
+      await saveToFirestore(finalMessages, persona);
       
     } catch (err) {
       const finalMessages = [...newMessages, { role: "assistant", text: "Error communicating with the server." }];
       setMessages(finalMessages);
-      saveSession(finalMessages, persona);
+      await saveToFirestore(finalMessages, persona);
     } finally {
       setLoading(false);
     }
