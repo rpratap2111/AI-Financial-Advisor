@@ -6,8 +6,7 @@
 
 > **Empowering your financial future with ML-driven insights and AI-powered advisory.**
 
-![AI Financial Advisor Hero Banner](./public/screenshots/hero-banner.png)
-*(Placeholder: Add a screenshot of your Landing Page here)*
+AI Financial Advisor Hero Banner<img width="1845" height="857" alt="image" src="https://github.com/user-attachments/assets/13865086-d26a-4f19-a670-52b33e1ce651" />
 
 ---
 
@@ -25,15 +24,15 @@ Get advice that fits your mood. Switch between three distinct AI personalities:
 - **🔥 Savage Mode**: Doesn't hold back—get roasted for your spending habits!
 - **✨ Gen-Z Mode**: Speak the language of the future (Slay, Sigma, No Cap).
 
-![Chat Interface Screenshot](./public/screenshots/chat-modes.png)
-*(Placeholder: Add a screenshot of the Chat Page with persona selector here)*
+Chat Interface Screenshot<img width="1846" height="897" alt="image" src="https://github.com/user-attachments/assets/7d620b15-606b-4265-957e-c3ab25019698" />
 
 ### 2. 📊 Smart Financial tools
 - **🔮 Term Deposit Prediction**: Uses a custom-trained ML model to predict your likelihood of successful investments.
 - **🛡️ Credit Risk Assessment**: Automated evaluation of your financial stability based on key metrics.
 
-![Forms Screenshot](./public/screenshots/forms-layout.png)
-*(Placeholder: Add a screenshot of the Risk or Deposit forms here)*
+Deposit Form Screenshot<img width="1790" height="888" alt="image" src="https://github.com/user-attachments/assets/e1f91145-0d11-4658-9a5a-7b8cbb73244c" />
+Rish Assessment Form Screenshot<img width="1731" height="830" alt="image" src="https://github.com/user-attachments/assets/28ae63fc-3829-48b0-8f53-f5cd0d2dd1ef" />
+
 
 ### 3. 🔐 Enterprise-Grade Security
 - **Google Authentication**: Powered by Firebase for seamless and secure access.
@@ -93,24 +92,20 @@ The application is architected for modern cloud platforms:
 - **Backend**: Hosted on **Render** using `gunicorn` for high-performance request handling.
 - **CORS**: Strictly controlled via environment variables to ensure secure cross-origin communication.
 
----
-
-## 🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ---
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is licensed under the **MIT License** – see the [LICENSE](./LICENSE) file for details.
+MIT License
+
+Copyright (c) 2026 Rudra Pratap
+
+Permission is hereby granted, free of charge, to any person obtaining a copy...
 
 ---
 
-**Built with ❤️ by [Rpratap](https://github.com/rpratap2111)**
+Built with ❤️ by **Rudra Pratap**  
+- GitHub: [@rudra-pratap](https://github.com/rpratap2111/)
+- LinkedIn: [Rudra Pratap](https://www.linkedin.com/in/rudra-pratap-a34a6b275/)
