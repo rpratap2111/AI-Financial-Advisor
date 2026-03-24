@@ -20,7 +20,7 @@ function Navbar() {
               <img src="/logo.png" alt="Logo" className="relative w-8 h-8 object-contain" />
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">
-              AI Advisor
+              AI Financial Advisor
             </span>
           </Link>
 
