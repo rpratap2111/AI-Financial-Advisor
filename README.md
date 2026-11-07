@@ -6,7 +6,7 @@
 
 > **Empowering your financial future with ML-driven insights and AI-powered advisory.**
 
-AI Financial Advisor Hero Banner<img width="1845" height="857" alt="image" src="https://github.com/user-attachments/assets/13865086-d26a-4f19-a670-52b33e1ce651" />
+![AI Financial Advisor home page](docs/screenshots/home.png)
 
 ---
 
@@ -24,14 +24,14 @@ Get advice that fits your mood. Switch between three distinct AI personalities:
 - **🔥 Savage Mode**: Doesn't hold back—get roasted for your spending habits!
 - **✨ Gen-Z Mode**: Speak the language of the future (Slay, Sigma, No Cap).
 
-Chat Interface Screenshot<img width="1846" height="897" alt="image" src="https://github.com/user-attachments/assets/7d620b15-606b-4265-957e-c3ab25019698" />
+![AI chat with a term insurance conversation](docs/screenshots/chat.png)
 
 ### 2. 📊 Smart Financial tools
 - **🔮 Term Deposit Prediction**: Uses a custom-trained ML model to predict your likelihood of successful investments.
 - **🛡️ Credit Risk Assessment**: Automated evaluation of your financial stability based on key metrics.
 
-Deposit Form Screenshot<img width="1790" height="888" alt="image" src="https://github.com/user-attachments/assets/e1f91145-0d11-4658-9a5a-7b8cbb73244c" />
-Rish Assessment Form Screenshot<img width="1731" height="830" alt="image" src="https://github.com/user-attachments/assets/28ae63fc-3829-48b0-8f53-f5cd0d2dd1ef" />
+![Deposit prediction with a stamped passbook result](docs/screenshots/deposit.png)
+![Credit risk assessment with a stamped passbook result](docs/screenshots/risk.png)
 
 
 ### 3. 🔐 Enterprise-Grade Security
@@ -44,7 +44,7 @@ Rish Assessment Form Screenshot<img width="1731" height="830" alt="image" src="h
 
 | Frontend | Backend | Intelligence |
 | :--- | :--- | :--- |
-| **React 18** (Vite) | **Python / Flask** | **Google Gemini 2.0 Flash** |
+| **React 18** (Vite) | **Python / Flask** | **Google Gemini 2.5 Flash** |
 | **Tailwind CSS** | **Scikit-Learn** | **Firebase Auth** |
 | **Framer Motion** | **Pandas / NumPy** | **RESTful API** |
 
