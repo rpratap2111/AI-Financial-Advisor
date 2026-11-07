@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { MotionConfig } from 'framer-motion'
 import Home from './pages/Home'
 import DepositForm from './pages/DepositForm'
 import RiskForm from './pages/RiskForm'
@@ -10,11 +11,13 @@ import ProtectedRoute from './components/ProtectedRoute'
 function App() {
   return (
     <>
+      <MotionConfig reducedMotion="user">
       <AuthProvider>
         <Router>
           <div className="min-h-screen flex flex-col">
+            <a href="#main" className="btn btn-primary skip-link h-9 px-3">Skip to content</a>
             <Navbar />
-            <main className="flex-grow pt-16">
+            <main id="main" tabIndex={-1} className="flex-grow pt-16 focus:outline-none">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/deposit" element={<ProtectedRoute><DepositForm /></ProtectedRoute>} />
@@ -31,6 +34,7 @@ function App() {
         </div>
       </Router>
       </AuthProvider>
+      </MotionConfig>
     </>
   )
 }

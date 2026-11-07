@@ -169,7 +169,7 @@ def chat():
             try:
                 # Use stream=True for the SDK
                 for chunk in client.models.generate_content_stream(
-                    model='gemini-2.0-flash', # Using 2.0-flash for faster streaming
+                    model='gemini-2.5-flash', # Fastest reply on the free tier; 3.8-flash took over a minute
                     contents=prompt
                 ):
                     if chunk.text:

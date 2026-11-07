@@ -51,8 +51,8 @@ function Home() {
               </button>
             ) : (
               <>
-                <Link to="/deposit" className="btn btn-primary">Deposit prediction</Link>
-                <Link to="/risk" className="btn btn-secondary">Risk assessment</Link>
+                <Link to="/deposit" className="btn btn-primary">Predict my deposit</Link>
+                <Link to="/risk" className="btn btn-secondary">Check my credit risk</Link>
               </>
             )}
           </div>

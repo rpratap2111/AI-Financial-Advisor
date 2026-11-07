@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "../context/AuthContext";
+import ThinkingIndicator from "../components/ThinkingIndicator";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUp, PanelLeft, Plus, Trash2 } from "lucide-react";
 import { db } from "../firebase";
@@ -266,7 +267,7 @@ const ChatPage = () => {
 
       {/* Sidebar */}
       <div className={`fixed top-16 bottom-0 left-0 z-40 flex w-64 flex-col border-r border-line bg-deep p-3 transition-transform duration-300 ease-out md:static md:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <button onClick={startNewChat} className="btn btn-secondary h-9 w-full">
+        <button onClick={startNewChat} className="btn btn-secondary w-full md:h-9">
           <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
           New session
         </button>
@@ -280,7 +281,7 @@ const ChatPage = () => {
             sessions.map((session) => (
               <div
                 key={session.id}
-                className={`group flex h-9 shrink-0 items-center rounded-lg transition-colors duration-150 ${currentSessionId === session.id ? "bg-raised text-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" : "text-fg-2 hover:bg-card hover:text-fg"}`}
+                className={`group flex h-11 shrink-0 items-center rounded-lg transition-colors md:h-9 duration-150 ${currentSessionId === session.id ? "bg-raised text-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" : "text-fg-2 hover:bg-card hover:text-fg"}`}
               >
                 <button
                   onClick={() => loadSession(session.id)}
@@ -291,7 +292,7 @@ const ChatPage = () => {
                 <button
                   onClick={(e) => deleteSession(e, session.id)}
                   aria-label={`Delete ${session.title}`}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-fg-3 transition-[color,opacity] duration-150 hover:text-bad focus-visible:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-fg-3 transition-[color,opacity] duration-150 hover:text-bad focus-visible:opacity-100 md:h-8 md:w-8 md:opacity-0 md:group-hover:opacity-100"
                 >
                   <Trash2 size={16} strokeWidth={1.5} aria-hidden="true" />
                 </button>
@@ -308,7 +309,7 @@ const ChatPage = () => {
         <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-line px-4 md:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <button
-              className="-ml-2 p-2 text-fg-2 transition-colors duration-150 hover:text-fg md:hidden"
+              className="-ml-3 flex h-11 w-11 shrink-0 items-center justify-center text-fg-2 transition-colors duration-150 hover:text-fg md:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label="Toggle history"
               aria-expanded={sidebarOpen}
@@ -324,7 +325,7 @@ const ChatPage = () => {
                 key={p}
                 onClick={() => setPersona(p)}
                 aria-pressed={persona === p}
-                className={`h-7 rounded-md px-2 text-xs transition-colors duration-150 sm:px-3 sm:text-[13px] ${persona === p ? "bg-raised text-fg" : "text-fg-2 hover:text-fg"}`}
+                className={`h-11 rounded-md px-2 text-xs transition-colors duration-150 sm:px-3 sm:text-[13px] md:h-7 ${persona === p ? "bg-raised text-fg" : "text-fg-2 hover:text-fg"}`}
               >
                 {personaLabels[p]}
               </button>
@@ -351,7 +352,7 @@ const ChatPage = () => {
               );
             })}
             {isThinking && (
-              <p role="status" className="animate-pulse text-sm leading-6 text-fg-3">Thinking</p>
+              <ThinkingIndicator persona={persona} />
             )}
           </div>
         </div>
@@ -365,7 +366,7 @@ const ChatPage = () => {
                   <button
                     key={i}
                     onClick={() => setInput(p)}
-                    className="rounded-lg border border-line px-3 py-1.5 text-left text-[13px] leading-5 text-fg-2 transition-colors duration-150 hover:border-line-strong hover:text-fg"
+                    className="min-h-11 rounded-lg border border-line px-3 py-1.5 text-left text-[13px] leading-5 text-fg-2 transition-colors duration-150 hover:border-line-strong hover:text-fg md:min-h-0"
                   >
                     {p}
                   </button>

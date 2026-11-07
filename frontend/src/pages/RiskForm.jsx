@@ -188,44 +188,48 @@ const RiskForm = () => {
                 className="grid grid-cols-2 items-center gap-x-4 gap-y-2 border-b border-line py-4 last:border-b-0 sm:grid-cols-[120px_1fr_1fr_1fr] sm:py-2"
               >
                 <span className="col-span-2 text-sm text-fg sm:col-span-1">{label}</span>
-                <select
-                  name={status}
-                  aria-label={`Repayment status, ${label}`}
-                  value={formData[status]}
-                  onChange={handleChange}
-                  className="field col-span-2 sm:col-span-1"
-                  required
-                >
-                  <option value="">Select</option>
-                  <option value={-1}>Paid duly</option>
-                  <option value={0}>No delay</option>
-                  <option value={1}>Delayed 1 month</option>
-                  <option value={2}>Delayed 2 months</option>
-                  <option value={3}>Delayed 3 months</option>
-                  <option value={4}>Delayed 4 months</option>
-                  <option value={5}>Delayed 5 months</option>
-                  <option value={6}>Delayed 6 months</option>
-                </select>
-                <input
-                  name={bill}
-                  type="number"
-                  aria-label={`Bill amount in rupees, ${label}`}
-                  placeholder="Bill"
-                  value={formData[bill]}
-                  onChange={handleChange}
-                  className="field"
-                  required
-                />
-                <input
-                  name={paid}
-                  type="number"
-                  aria-label={`Amount paid in rupees, ${label}`}
-                  placeholder="Paid"
-                  value={formData[paid]}
-                  onChange={handleChange}
-                  className="field"
-                  required
-                />
+                <Field label="Repayment status" labelClassName="sm:hidden" className="col-span-2 sm:col-span-1">
+                  <select
+                    name={status}
+                    aria-label={`Repayment status, ${label}`}
+                    value={formData[status]}
+                    onChange={handleChange}
+                    className="field"
+                    required
+                  >
+                    <option value="">Select</option>
+                    <option value={-1}>Paid duly</option>
+                    <option value={0}>No delay</option>
+                    <option value={1}>Delayed 1 month</option>
+                    <option value={2}>Delayed 2 months</option>
+                    <option value={3}>Delayed 3 months</option>
+                    <option value={4}>Delayed 4 months</option>
+                    <option value={5}>Delayed 5 months</option>
+                    <option value={6}>Delayed 6 months</option>
+                  </select>
+                </Field>
+                <Field label="Bill amount (₹)" labelClassName="sm:hidden">
+                  <input
+                    name={bill}
+                    type="number"
+                    aria-label={`Bill amount in rupees, ${label}`}
+                    value={formData[bill]}
+                    onChange={handleChange}
+                    className="field"
+                    required
+                  />
+                </Field>
+                <Field label="Amount paid (₹)" labelClassName="sm:hidden">
+                  <input
+                    name={paid}
+                    type="number"
+                    aria-label={`Amount paid in rupees, ${label}`}
+                    value={formData[paid]}
+                    onChange={handleChange}
+                    className="field"
+                    required
+                  />
+                </Field>
               </div>
             ))}
           </div>

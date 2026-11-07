@@ -29,7 +29,7 @@ function Navbar() {
   return (
     <nav className="fixed z-50 w-full border-b border-line bg-page">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex h-11 items-center gap-2">
           <img src="/logo-mark.png" alt="" className="h-7 w-7 object-contain" />
           <span className="text-base font-medium text-fg">AI Financial Advisor</span>
         </Link>
@@ -79,7 +79,7 @@ function Navbar() {
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
-          className="-mr-2 p-2 text-fg-2 transition-colors duration-150 hover:text-fg md:hidden"
+          className="-mr-3 flex h-11 w-11 items-center justify-center text-fg-2 transition-colors duration-150 hover:text-fg md:hidden"
         >
           {isMenuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
         </button>
@@ -96,7 +96,7 @@ function Navbar() {
                 end={to === "/"}
                 onClick={toggleMenu}
                 className={({ isActive }) =>
-                  `flex h-10 items-center rounded-lg px-3 text-sm ${isActive ? "bg-raised text-fg" : "text-fg-2"}`
+                  `flex h-11 items-center rounded-lg px-3 text-sm ${isActive ? "bg-raised text-fg" : "text-fg-2"}`
                 }
               >
                 {mobileLabel}
@@ -112,7 +112,7 @@ function Navbar() {
                   </div>
                   <button
                     onClick={() => { logout(); toggleMenu(); }}
-                    className="shrink-0 pl-4 text-sm text-fg-2"
+                    className="h-11 shrink-0 pl-4 text-sm text-fg-2"
                   >
                     Log out
                   </button>

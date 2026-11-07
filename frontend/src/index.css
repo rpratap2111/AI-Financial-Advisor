@@ -83,6 +83,13 @@
     color: var(--color-fg-3);
   }
 
+  /* Phones get full 44px touch targets. */
+  @media (max-width: 767px) {
+    .field {
+      height: 44px;
+    }
+  }
+
   .field[type="number"] {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
@@ -137,6 +144,190 @@
 
   .btn-secondary:hover:not(:disabled) {
     border-color: var(--color-line-strong);
+  }
+
+  /* Off screen until a keyboard user tabs to it. */
+  .skip-link {
+    position: fixed;
+    top: 10px;
+    left: 16px;
+    z-index: 60;
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+}
+
+/*
+ * Shown only while the advisor is working. Signals race along the logo's real
+ * neural lines, neurons fire as they pass, and all four meet in the rupee sign
+ * at the same moment, sending a shockwave back through the whole mark.
+ * Everything rests at its plain state, so reduced motion shows a still logo.
+ */
+.think-mark {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  overflow: visible;
+  animation: think-impact 2.4s var(--ease-out) infinite;
+}
+
+.think-base {
+  animation: think-dim 2.4s linear infinite;
+}
+
+.think-signal {
+  opacity: 0;
+  offset-rotate: 0deg;
+  animation: think-run 2.4s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+
+.think-route-top {
+  offset-path: path("M29 179 L120 137 L138 65 L200 111 L316 93 L355 128 L300 205");
+}
+.think-route-crown {
+  offset-path: path("M90 234 L197 202 L200 111 L257 36 L316 93 L285 130 L300 205");
+}
+.think-route-low {
+  offset-path: path("M90 234 L160 262 L196 304 L265 250 L300 205");
+}
+.think-route-right {
+  offset-path: path("M376 350 L453 324 L430 255 L300 205");
+}
+
+.think-neuron {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: think-fire 2.4s var(--ease-out) infinite;
+}
+
+.think-wave {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: think-burst 2.4s var(--ease-out) infinite;
+}
+
+.thinking-text {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-fg-3) 0%,
+    var(--color-fg-3) 42%,
+    var(--color-fg) 50%,
+    var(--color-fg-3) 58%,
+    var(--color-fg-3) 100%
+  );
+  background-position: 100% 0;
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation:
+    think-shimmer 1.4s linear infinite,
+    think-word 320ms var(--ease-out);
+}
+
+@keyframes think-dim {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes think-run {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  52% {
+    offset-distance: 100%;
+    opacity: 1;
+  }
+  58%,
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes think-fire {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.5);
+  }
+  6% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+  16%,
+  100% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes think-burst {
+  0%,
+  50% {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+  54% {
+    opacity: 1;
+  }
+  78%,
+  100% {
+    opacity: 0;
+    transform: scale(3.4);
+  }
+}
+
+@keyframes think-impact {
+  0%,
+  50% {
+    transform: scale(1);
+  }
+  58% {
+    transform: scale(1.08);
+  }
+  76%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes think-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+@keyframes think-word {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+/* People who ask for less motion get the end state at once. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
