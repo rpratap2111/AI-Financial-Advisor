@@ -1,101 +1,105 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import GoogleIcon from "../components/GoogleIcon";
+import { PassbookPage, PassbookRow, Stamp } from "../components/Passbook";
+
+const features = [
+  {
+    title: "Butterfly effect",
+    text: "Find the one or two specific lifestyle changes that would shift your financial outlook for the better.",
+    to: "/deposit",
+  },
+  {
+    title: "Dual perspectives",
+    text: "Get roasted by a WallStreetBets Degen or advised by a wise Boomer investor, based on your risk profile.",
+    to: "/risk",
+  },
+  {
+    title: "AI chat",
+    text: "Ask any financial question, and switch between professional, savage and Gen-Z personas.",
+    to: "/chat",
+  },
+];
 
 function Home() {
   const { user, loginWithGoogle } = useAuth();
 
   return (
-    <div className="pt-20 md:pt-24 flex flex-col items-center min-h-screen text-center px-4 md:px-6">
-      
-      {/* HERO SECTION */}
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
+    <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <motion.section
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-4xl mt-12 md:mt-16 w-full"
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="grid items-center gap-12 py-12 lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-2 lg:gap-16 lg:py-16"
       >
-        <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs md:text-sm font-semibold tracking-wide">
-          ✨ The Future of Wealth Management
-        </div>
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
-          Your Smart <br className="hidden sm:block"/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400">
-            AI Financial Advisor
-          </span>
-        </h1>
-        <p className="text-base md:text-xl text-gray-400 mb-8 md:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
-          Unlock personalized investment strategies, dual-perspective risk assessments, 
-          and butterfly-effect deposit predictions powered by next-generation Generative AI.
-        </p>
+        <div>
+          <h1 className="text-[40px] leading-[1.08] font-medium tracking-[-0.02em] sm:text-[56px] sm:leading-[1.05] sm:tracking-[-0.03em]">
+            Find the small change that flips your finances
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-7 text-fg-2">
+            Predict whether a term deposit suits you, check your credit default risk, and get a
+            second opinion from a cautious Boomer and a reckless Degen.
+          </p>
 
-        {!user ? (
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={loginWithGoogle}
-            className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-black font-bold text-lg shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transition-all flex items-center justify-center gap-3 mx-auto"
-          >
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
-            Continue with Google
-          </motion.button>
-        ) : (
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 px-4 w-full max-w-lg mx-auto">
-            <Link to="/deposit" className="w-full">
-              <motion.button 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-500/20 text-sm md:text-base"
-              >
-                Deposit Prediction
-              </motion.button>
-            </Link>
-            <Link to="/risk" className="w-full">
-              <motion.button 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-4 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold shadow-lg shadow-cyan-500/20 text-sm md:text-base"
-              >
-                Risk Assessment
-              </motion.button>
-            </Link>
-            <Link to="/chat" className="w-full">
-              <motion.button 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-4 rounded-2xl bg-gray-800 border border-white/10 hover:bg-gray-700 text-white font-bold shadow-lg text-sm md:text-base"
-              >
-                AI Chat
-              </motion.button>
-            </Link>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            {!user ? (
+              <button onClick={loginWithGoogle} className="btn btn-primary">
+                <GoogleIcon />
+                Continue with Google
+              </button>
+            ) : (
+              <>
+                <Link to="/deposit" className="btn btn-primary">Deposit prediction</Link>
+                <Link to="/risk" className="btn btn-secondary">Risk assessment</Link>
+              </>
+            )}
           </div>
-        )}
-      </motion.div>
+        </div>
 
-      {/* FEATURES GRID */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 1 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mt-24 mb-16 px-4"
-      >
-        <div className="bg-gray-900/50 border border-gray-800 p-8 rounded-2xl text-left backdrop-blur-sm">
-          <div className="text-3xl mb-4">🦋</div>
-          <h3 className="text-xl font-bold mb-2 text-indigo-300">Butterfly Effect</h3>
-          <p className="text-gray-400 text-sm leading-relaxed">Discover how 1 or 2 hyper-specific changes to your lifestyle can drastically alter your financial universe for the better.</p>
-        </div>
-        <div className="bg-gray-900/50 border border-gray-800 p-8 rounded-2xl text-left backdrop-blur-sm">
-          <div className="text-3xl mb-4">🎭</div>
-          <h3 className="text-xl font-bold mb-2 text-cyan-300">Dual Perspectives</h3>
-          <p className="text-gray-400 text-sm leading-relaxed">Get roasted by a WallStreetBets Degen or advised by a wise Boomer investor based on your mathematical risk profile.</p>
-        </div>
-        <div className="bg-gray-900/50 border border-gray-800 p-8 rounded-2xl text-left backdrop-blur-sm">
-          <div className="text-3xl mb-4">💬</div>
-          <h3 className="text-xl font-bold mb-2 text-emerald-300">Interactive AI Chat</h3>
-          <p className="text-gray-400 text-sm leading-relaxed">Ask any financial question to our AI. Switch between professional, savage, or Gen-Z personas for tailored advice.</p>
-        </div>
-      </motion.div>
+        <PassbookPage className="mx-auto w-full max-w-md lg:mr-0 lg:ml-auto">
+          <div className="flex items-baseline justify-between gap-4 border-b border-paper-rule py-4 pr-4 pl-12 sm:pr-6 sm:pl-14">
+            <span className="text-sm font-medium">Deposit prediction</span>
+            <span className="text-xs text-paper-ink-2">Sample entry</span>
+          </div>
+          <PassbookRow label="Age" value="34" />
+          <PassbookRow label="Job" value="Technician" />
+          <PassbookRow label="Education" value="Tertiary" />
+          <PassbookRow label="Account balance" value="₹1,42,500" />
+          <PassbookRow label="Prediction" value="Not ideal" />
+          <PassbookRow label="One change" value="Hold ₹40,000 more" />
+          <div className="flex min-h-24 items-center justify-end py-4 pr-6 pl-12 sm:pl-14">
+            <Stamp>Highly suitable</Stamp>
+          </div>
+        </PassbookPage>
+      </motion.section>
 
+      <section className="border-t border-line pb-16">
+        {features.map(({ title, text, to }) => {
+          const row = (
+            <>
+              <h2 className="text-base font-medium text-fg">{title}</h2>
+              <p className="text-sm leading-6 text-fg-2">{text}</p>
+            </>
+          );
+          const rowClass = "grid gap-2 border-b border-line py-6 sm:grid-cols-[240px_1fr_auto] sm:items-center sm:gap-8";
+
+          return user ? (
+            <Link key={title} to={to} className={`group ${rowClass}`}>
+              {row}
+              <ArrowRight
+                size={16}
+                strokeWidth={1.5}
+                aria-hidden="true"
+                className="hidden text-fg-3 transition-colors duration-150 group-hover:text-fg sm:block"
+              />
+            </Link>
+          ) : (
+            <div key={title} className={rowClass}>{row}</div>
+          );
+        })}
+      </section>
     </div>
   );
 }

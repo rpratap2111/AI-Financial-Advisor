@@ -118,6 +118,10 @@ def predict_risk():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({"status": "awake"})
+
 @app.route('/chat', methods=['POST'])
 def chat():
     if not client:
@@ -161,11 +165,21 @@ def chat():
         
         prompt += f"Now, the user asks: '{user_message}'. Answer based on the context."
         
-        response = client.models.generate_content(
-            model='gemini-2.5-flash',
-            contents=prompt
-        )
-        return jsonify({"reply": response.text})
+        def generate():
+            try:
+                # Use stream=True for the SDK
+                for chunk in client.models.generate_content_stream(
+                    model='gemini-2.0-flash', # Using 2.0-flash for faster streaming
+                    contents=prompt
+                ):
+                    if chunk.text:
+                        yield chunk.text
+            except Exception as e:
+                yield f"Error in stream: {str(e)}"
+
+        from flask import Response, stream_with_context
+        return Response(stream_with_context(generate()), mimetype='text/plain')
+
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 

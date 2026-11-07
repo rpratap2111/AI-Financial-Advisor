@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUp, PanelLeft, Plus, Trash2 } from "lucide-react";
 import { db } from "../firebase";
 import { 
   collection, 
@@ -18,7 +19,7 @@ import {
 
 const ChatPage = () => {
   const { user } = useAuth();
-  const defaultMessage = { role: "assistant", text: "Hello! I am your AI Financial Advisor. How can I help you today?" };
+  const defaultMessage = { role: "assistant", text: "I am your AI Financial Advisor. Ask me about saving, investing or credit" };
   
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
@@ -27,12 +28,12 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([defaultMessage]);
   const allPrompts = [
     "What should be the size of my emergency fund?",
-    "Explain compound interest simply.",
+    "Explain compound interest simply",
     "Should I invest in gold right now?",
     "How to start investing with ₹5000 a month?",
     "Mutual funds vs individual stocks?",
     "What are good tax saving instruments?",
-    "Explain the 50/30/20 budgeting rule.",
+    "Explain the 50/30/20 budgeting rule",
     "How much term insurance do I need?",
     "Is it better to rent or buy a house?",
     "What is SIP and why is it recommended?"
@@ -46,7 +47,7 @@ const ChatPage = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 768);
 
   // Load all sessions from Firestore on mount
   useEffect(() => {
@@ -153,6 +154,24 @@ const ChatPage = () => {
     }
   };
 
+  // Heartbeat to keep Render server awake
+  useEffect(() => {
+    const pingServer = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_BASE_URL;
+        await fetch(`${API_URL}/ping`);
+        console.log("Server heartbeat sent");
+      } catch (err) {
+        console.error("Heartbeat failed", err);
+      }
+    };
+
+    // Ping immediately and then every 10 minutes
+    pingServer();
+    const interval = setInterval(pingServer, 10 * 60 * 1000); 
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -161,7 +180,7 @@ const ChatPage = () => {
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
 
     const userMessage = input.trim();
     const newMessages = [...messages, { role: "user", text: userMessage }];
@@ -171,77 +190,110 @@ const ChatPage = () => {
 
     try {
       const API_URL = import.meta.env.VITE_API_BASE_URL;
-      const res = await fetch(`${API_URL}/chat`, {
+      const response = await fetch(`${API_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage, history: messages, persona: persona })
+        body: JSON.stringify({ 
+          message: userMessage, 
+          history: messages, 
+          persona: persona 
+        })
       });
-      const data = await res.json();
-      
-      let finalMessages;
-      if (res.ok) {
-        finalMessages = [...newMessages, { role: "assistant", text: data.reply }];
-      } else {
-        finalMessages = [...newMessages, { role: "assistant", text: `Error: ${data.error}` }];
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to connect to server");
       }
-      setMessages(finalMessages);
-      await saveToFirestore(finalMessages, persona);
+
+      // Add a placeholder message for the assistant that we will update
+      const assistantId = Date.now();
+      setMessages(prev => [...prev, { role: "assistant", text: "", id: assistantId }]);
       
-    } catch (err) {
-      const finalMessages = [...newMessages, { role: "assistant", text: "Error communicating with the server." }];
-      setMessages(finalMessages);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullContent = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        fullContent += chunk;
+
+        // Update the last message in real-time
+        setMessages(prev => {
+          const updated = [...prev];
+          const lastIndex = updated.length - 1;
+          if (updated[lastIndex].role === "assistant") {
+            updated[lastIndex].text = fullContent;
+          }
+          return updated;
+        });
+      }
+
+      // Save the final complete message to Firestore
+      const finalMessages = [...newMessages, { role: "assistant", text: fullContent }];
       await saveToFirestore(finalMessages, persona);
+
+    } catch (err) {
+      console.error("Chat error:", err);
+      const errorMsg = { role: "assistant", text: `Error: ${err.message || "Failed to connect to the server."}` };
+      const finalWithErrors = [...newMessages, errorMsg];
+      setMessages(finalWithErrors);
+      await saveToFirestore(finalWithErrors, persona);
     } finally {
       setLoading(false);
     }
   };
 
-  const themeColors = {
-    professional: "from-blue-400 to-emerald-400",
-    savage: "from-red-500 to-orange-500",
-    genz: "from-purple-500 to-pink-500"
+  const personaTitles = {
+    professional: "AI assistant",
+    savage: "Roast mode",
+    genz: "Gen-Z mode"
   };
 
-  const bubbleColors = {
-    professional: "bg-blue-600",
-    savage: "bg-red-600",
-    genz: "bg-purple-600"
+  const personaLabels = {
+    professional: "Professional",
+    savage: "Savage",
+    genz: "Gen-Z"
   };
+
+  const lastMessage = messages[messages.length - 1];
+  const isThinking = loading && (lastMessage.role === "user" || !lastMessage.text);
 
   return (
-    <div className="flex bg-[#0b0f19] text-white h-screen pt-[72px] overflow-hidden relative">
-      
-      {/* Sidebar - Backdrop Blur & Mobile Slide-in */}
-      <div className={`fixed md:relative z-40 h-[calc(100vh-72px)] w-80 bg-[#111827]/95 backdrop-blur-2xl border-r border-gray-800/50 flex flex-col p-6 transition-all duration-500 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
-        <button 
-          onClick={startNewChat}
-          className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-2xl font-bold transition-all mb-8 shadow-xl shadow-indigo-500/20 active:scale-95 group"
-        >
-          <span className="text-2xl group-hover:rotate-90 transition-transform duration-300">+</span> 
-          <span className="text-sm tracking-wide">New Session</span>
+    <div className="relative flex h-[calc(100dvh-4rem)] overflow-hidden">
+
+      {/* Sidebar */}
+      <div className={`fixed top-16 bottom-0 left-0 z-40 flex w-64 flex-col border-r border-line bg-deep p-3 transition-transform duration-300 ease-out md:static md:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <button onClick={startNewChat} className="btn btn-secondary h-9 w-full">
+          <Plus size={16} strokeWidth={1.5} aria-hidden="true" />
+          New session
         </button>
 
-        <div className="text-[10px] font-black text-gray-500 mb-4 px-2 uppercase tracking-[0.3em]">History</div>
-        
-        <div className="flex-1 overflow-y-auto space-y-3 pr-2 scroller">
+        <div className="mt-6 mb-2 px-2 text-xs leading-4 text-fg-3">History</div>
+
+        <div className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
           {sessions.length === 0 ? (
-            <div className="text-sm text-gray-500 italic px-4 py-10 text-center bg-gray-900/40 rounded-3xl border border-gray-800/30">No history yet</div>
+            <div className="px-2 py-2 text-sm text-fg-3">No history yet</div>
           ) : (
             sessions.map((session) => (
-              <div 
+              <div
                 key={session.id}
-                onClick={() => loadSession(session.id)}
-                className={`group flex items-center justify-between px-4 py-4 rounded-2xl cursor-pointer transition-all border ${currentSessionId === session.id ? 'bg-indigo-600/10 border-indigo-500/40 text-white shadow-lg' : 'text-gray-400 border-transparent hover:bg-gray-800/50 hover:text-gray-200'}`}
+                className={`group flex h-9 shrink-0 items-center rounded-lg transition-colors duration-150 ${currentSessionId === session.id ? "bg-raised text-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]" : "text-fg-2 hover:bg-card hover:text-fg"}`}
               >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className={`w-1.5 h-1.5 rounded-full ${currentSessionId === session.id ? 'bg-indigo-400' : 'bg-gray-700'}`}></div>
-                  <span className="truncate text-xs font-semibold">{session.title}</span>
-                </div>
-                <button 
-                  onClick={(e) => deleteSession(e, session.id)}
-                  className="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-xl hover:bg-red-500/10"
+                <button
+                  onClick={() => loadSession(session.id)}
+                  className="h-full min-w-0 flex-1 truncate rounded-lg pl-2 text-left text-sm"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  {session.title}
+                </button>
+                <button
+                  onClick={(e) => deleteSession(e, session.id)}
+                  aria-label={`Delete ${session.title}`}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-fg-3 transition-[color,opacity] duration-150 hover:text-bad focus-visible:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                >
+                  <Trash2 size={16} strokeWidth={1.5} aria-hidden="true" />
                 </button>
               </div>
             ))
@@ -249,87 +301,71 @@ const ChatPage = () => {
         </div>
       </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col items-center w-full max-w-5xl mx-auto h-[calc(100vh-72px)] overflow-hidden">
-        
-        {/* Header with Sidebar Toggle & Persona Selector */}
-        <div className="w-full h-16 md:h-20 flex items-center justify-between px-4 md:px-0 gap-3 border-b border-gray-800/30 md:border-none">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <button 
-              className="md:hidden p-2.5 bg-gray-800/80 rounded-xl border border-gray-700 hover:bg-gray-700 transition-colors"
+      {/* Main chat area */}
+      <div className="flex min-w-0 flex-1 flex-col">
+
+        {/* Header with sidebar toggle and persona selector */}
+        <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-line px-4 md:px-6">
+          <div className="flex min-w-0 items-center gap-2">
+            <button
+              className="-ml-2 p-2 text-fg-2 transition-colors duration-150 hover:text-fg md:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle history"
+              aria-expanded={sidebarOpen}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+              <PanelLeft size={18} strokeWidth={1.5} aria-hidden="true" />
             </button>
-            <AnimatePresence mode="wait">
-              <motion.h2 
-                key={persona}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                className={`text-base md:text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r ${themeColors[persona]} truncate`}
-              >
-                {persona === 'professional' ? "AI Assistant" : 
-                 persona === 'savage' ? "Roast Mode" : 
-                 "Gen-Z Mode"}
-              </motion.h2>
-            </AnimatePresence>
+            <h1 className="truncate text-base font-medium">{personaTitles[persona]}</h1>
           </div>
 
-          <div className="flex bg-gray-900/80 p-1 rounded-full border border-gray-800/50 shadow-inner scale-90 md:scale-100 origin-right">
+          <div className="flex shrink-0 gap-0.5 rounded-lg border border-line bg-card p-0.5">
             {(['professional', 'savage', 'genz']).map((p) => (
-              <button 
+              <button
                 key={p}
-                onClick={() => setPersona(p)} 
-                className={`px-3 md:px-5 py-1.5 rounded-full text-[10px] md:text-xs font-bold transition-all duration-300 ${persona === p ? `${bubbleColors[p]} text-white shadow-xl scale-105` : 'text-gray-500 hover:text-gray-300'}`}
+                onClick={() => setPersona(p)}
+                aria-pressed={persona === p}
+                className={`h-7 rounded-md px-2 text-xs transition-colors duration-150 sm:px-3 sm:text-[13px] ${persona === p ? "bg-raised text-fg" : "text-fg-2 hover:text-fg"}`}
               >
-                {p.charAt(0).toUpperCase() + p.slice(1)}
+                {personaLabels[p]}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Chat Box - More Modern Bubble Styles */}
-        <div className="w-full flex-1 flex flex-col overflow-hidden relative group">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none z-10"></div>
-          
-          <div ref={scrollRef} className="flex-1 p-4 md:p-8 overflow-y-auto space-y-6 scroller scroll-smooth">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[88%] md:max-w-[80%] px-5 py-4 rounded-[2.5rem] text-sm md:text-base leading-relaxed shadow-lg transition-all duration-500 ${
-                    msg.role === "user" 
-                      ? `${bubbleColors[persona]} text-white rounded-br-none border-b-2 border-r-2 border-white/10` 
-                      : "bg-gray-800/50 text-gray-200 border border-white/5 rounded-bl-none backdrop-blur-sm markdown-body prose prose-invert max-w-none"
-                  }`}
-                >
-                  {msg.role === "user" ? (
-                    <span className="font-medium tracking-wide">{msg.text}</span>
-                  ) : (
-                    <div className="opacity-90"><ReactMarkdown>{msg.text}</ReactMarkdown></div>
-                  )}
+        {/* Messages */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:px-6">
+          <div className="mx-auto flex max-w-3xl flex-col gap-6">
+            {messages.map((msg, idx) => {
+              if (msg.role !== "user" && !msg.text) return null;
+
+              return msg.role === "user" ? (
+                <div key={idx} className="flex justify-end">
+                  <div className="max-w-[88%] rounded-xl bg-raised px-4 py-3 text-sm leading-6 whitespace-pre-wrap md:max-w-[80%]">
+                    {msg.text}
+                  </div>
                 </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="bg-gray-800/50 border border-white/5 p-4 rounded-3xl rounded-bl-none flex items-center space-x-2 h-14 px-8 backdrop-blur-sm">
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-100"></div>
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce delay-200"></div>
+              ) : (
+                <div key={idx} className="markdown-body text-sm leading-6 text-fg">
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
-              </div>
+              );
+            })}
+            {isThinking && (
+              <p role="status" className="animate-pulse text-sm leading-6 text-fg-3">Thinking</p>
             )}
           </div>
+        </div>
 
-          <div className="p-4 md:p-8 bg-black/40 backdrop-blur-2xl border-t border-white/5">
+        {/* Composer */}
+        <div className="shrink-0 border-t border-line px-4 py-4 md:px-6">
+          <div className="mx-auto max-w-3xl">
             {messages.length === 1 && !input && (
-              <div className="flex flex-wrap justify-center gap-2 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+              <div className="mb-3 flex flex-wrap gap-2">
                 {suggestedPrompts.map((p, i) => (
                   <button
                     key={i}
                     onClick={() => setInput(p)}
-                    className="text-[10px] md:text-xs bg-gray-800/60 hover:bg-indigo-600/40 hover:border-indigo-500/50 text-gray-300 px-4 py-2 rounded-full transition-all border border-gray-700/50"
+                    className="rounded-lg border border-line px-3 py-1.5 text-left text-[13px] leading-5 text-fg-2 transition-colors duration-150 hover:border-line-strong hover:text-fg"
                   >
                     {p}
                   </button>
@@ -337,49 +373,38 @@ const ChatPage = () => {
               </div>
             )}
 
-            <form onSubmit={handleSend} className="flex gap-3 w-full max-w-4xl mx-auto items-center">
-              <div className="flex-1 relative group">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your message..."
-                  className="w-full bg-gray-800/40 border border-white/10 text-white rounded-2xl px-6 py-4 md:py-5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all shadow-2xl placeholder:text-gray-500 text-sm md:text-base"
-                />
-              </div>
+            <form onSubmit={handleSend} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Message"
+                aria-label="Message"
+                className="field h-11 flex-1"
+              />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="relative overflow-hidden w-14 h-14 md:w-auto md:px-10 md:h-[62px] rounded-2xl shadow-2xl transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:grayscale group flex items-center justify-center font-black uppercase tracking-widest text-xs md:text-sm"
+                aria-label="Send"
+                className="btn btn-primary w-11 px-0 md:w-auto md:px-5"
               >
-                <AnimatePresence>
-                  <motion.div
-                    key={persona}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className={`absolute inset-0 bg-gradient-to-br ${themeColors[persona]}`}
-                  />
-                </AnimatePresence>
-                <span className="relative z-10 flex items-center gap-2 text-white">
-                  <span className="hidden md:block">Send Message</span>
-                  <svg className="w-5 h-5 md:w-4 md:h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </span>
+                <span className="hidden md:block">Send</span>
+                <ArrowUp size={16} strokeWidth={1.5} aria-hidden="true" />
               </button>
             </form>
           </div>
         </div>
       </div>
-      
-      {/* Mobile Sidebar Overlay */}
+
+      {/* Mobile sidebar overlay */}
       <AnimatePresence>
         {sidebarOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden" 
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 top-16 z-30 bg-black/60 md:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}

@@ -1,5 +1,25 @@
 import { useState } from "react";
+import Field from "../components/Field";
 import ResultCard from "../components/ResultCard";
+
+// Each row of the ledger is one month. The dataset pairs PAY_0 with BILL_AMT1
+// and PAY_AMT1, then PAY_2 with BILL_AMT2 and PAY_AMT2, and so on.
+const months = [
+  { label: "Last month", status: "PAY_0", bill: "BILL_AMT1", paid: "PAY_AMT1" },
+  { label: "2 months ago", status: "PAY_2", bill: "BILL_AMT2", paid: "PAY_AMT2" },
+  { label: "3 months ago", status: "PAY_3", bill: "BILL_AMT3", paid: "PAY_AMT3" },
+  { label: "4 months ago", status: "PAY_4", bill: "BILL_AMT4", paid: "PAY_AMT4" },
+  { label: "5 months ago", status: "PAY_5", bill: "BILL_AMT5", paid: "PAY_AMT5" },
+  { label: "6 months ago", status: "PAY_6", bill: "BILL_AMT6", paid: "PAY_AMT6" },
+];
+
+const factors = [
+  ["Credit limit and age", "Financial capacity and stability"],
+  ["Education and marital status", "Socio-economic background"],
+  ["Payment history", "How timely past repayments were"],
+  ["Bill amounts", "Outstanding dues from previous months"],
+  ["Payment amounts", "Actual repayment behavior over time"],
+];
 
 const RiskForm = () => {
   const [formData, setFormData] = useState({
@@ -29,6 +49,7 @@ const RiskForm = () => {
   });
 
   const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -39,6 +60,7 @@ const RiskForm = () => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+    setError("");
 
     try {
       const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -57,116 +79,172 @@ const RiskForm = () => {
         });
       } else {
         console.error("Error:", data.error);
+        setError("The assessment failed. Check your details and try again");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      setError("Could not reach the server. Try again in a moment");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 bg-gray-900 text-white rounded-2xl shadow-lg max-w-4xl mx-auto">
-      <div className="mb-6 mt-10 bg-gray-800 p-4 rounded-xl shadow">
-        <h2 className="text-2xl font-bold mb-2 text-blue-400">Credit Risk Assessment</h2>
-        <p className="text-gray-300 mb-2">
-          This tool helps predict whether a customer is likely to default on credit card payments.  
-          By analyzing factors such as income, spending, repayment history, and bill amounts,  
-          the model estimates the risk of default.
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <h1 className="text-[32px] leading-tight font-medium">Credit risk assessment</h1>
+          <p className="mt-4 max-w-xl text-sm leading-6 text-fg-2">
+            This tool predicts whether a customer is likely to default on credit card payments. It
+            looks at income, spending, repayment history and bill amounts to estimate the risk of
+            default.
+          </p>
+        </div>
+        <dl className="border-t border-line text-sm">
+          {factors.map(([term, detail]) => (
+            <div key={term} className="grid gap-1 border-b border-line py-3 sm:grid-cols-2 sm:gap-4">
+              <dt className="text-fg">{term}</dt>
+              <dd className="text-fg-2">{detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      <section className="mt-12">
+        <h2 className="text-base font-medium">The AI dual perspectives</h2>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-fg-2">
+          After calculating your risk, the AI reads your profile from two opposite financial
+          philosophies.
         </p>
-        <ul className="list-disc pl-6 text-gray-400 text-sm">
-          <li><b>Credit Limit & Age</b> → shows financial capacity and stability.</li>
-          <li><b>Education & Marital Status</b> → socio-economic background indicators.</li>
-          <li><b>Payment History (PAY_0 … PAY_6)</b> → how timely past repayments were.</li>
-          <li><b>Bill Amounts</b> → outstanding dues from previous months.</li>
-          <li><b>Payment Amounts</b> → actual repayment behavior over time.</li>
-        </ul>
-      </div>
-
-      <div className="mb-8 bg-indigo-900/40 border border-indigo-500/40 p-5 rounded-xl shadow-inner">
-        <h3 className="text-lg font-bold mb-2 text-indigo-300 flex items-center gap-2">
-          Understanding the AI Dual Perspectives
-        </h3>
-        <p className="text-indigo-200/80 text-sm mb-4">After calculating your mathematical risk limit, our Generative AI will analyze your profile from two extreme opposite financial philosophies:</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-2">
-          <div className="bg-gray-800/80 p-4 rounded-lg border border-gray-700/50 shadow-md">
-            <span className="font-bold text-blue-400 block mb-1 text-base">The Boomer Investor</span>
-            <span className="text-gray-400 leading-relaxed font-light">A traditional, conservative personality (like Warren Buffett). Focuses on long-term safety, extremely low risk, and slow but steady wealth building. Expect wise, cautious, "old-school" warnings.</span>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-line bg-card p-5">
+            <h3 className="text-sm font-medium">The Boomer Investor</h3>
+            <p className="mt-2 text-sm leading-6 text-fg-2">
+              A traditional, conservative personality, like Warren Buffett. Focuses on long-term
+              safety, very low risk and slow, steady wealth building. Expect cautious, old-school
+              warnings.
+            </p>
           </div>
-          <div className="bg-gray-800/80 p-4 rounded-lg border border-gray-700/50 shadow-md">
-            <span className="font-bold text-pink-400 block mb-1 text-base">The Degen Trader</span>
-            <span className="text-gray-400 leading-relaxed font-light">A reckless, meme-culture internet personality (like Reddit's r/WallStreetBets). Focuses on high-risk, high-reward "YOLO" trades. Expect internet slang and absolutely terrible (but hilarious) advice.</span>
+          <div className="rounded-xl border border-line bg-card p-5">
+            <h3 className="text-sm font-medium">The Degen Trader</h3>
+            <p className="mt-2 text-sm leading-6 text-fg-2">
+              A reckless, meme-culture personality, like Reddit's r/WallStreetBets. Focuses on
+              high-risk, high-reward YOLO trades. Expect internet slang and terrible but funny
+              advice.
+            </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2 sm:px-0">
-        <div className="col-span-1 sm:col-span-2 font-semibold text-lg text-blue-400">User Info</div>
-        <input name="LIMIT_BAL" type="number" value={formData.LIMIT_BAL} onChange={handleChange} placeholder="Credit Limit (₹)" className="p-3 rounded-xl bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 outline-none" />
-        <select name="SEX" value={formData.SEX} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
-          <option value="">Select Gender</option>
-          <option value={1}>Male</option>
-          <option value={2}>Female</option>
-        </select>
-        <select name="EDUCATION" value={formData.EDUCATION} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
-          <option value="">Select Education</option>
-          <option value={1}>Graduate School</option>
-          <option value={2}>University</option>
-          <option value={3}>High School</option>
-          <option value={4}>Others</option>
-        </select>
-        <select name="MARRIAGE" value={formData.MARRIAGE} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
-          <option value="">Select Marital Status</option>
-          <option value={1}>Married</option>
-          <option value={2}>Single</option>
-          <option value={3}>Others</option>
-        </select>
-        <input name="AGE" type="number" value={formData.AGE} onChange={handleChange} placeholder="Age" className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none col-span-1 sm:col-span-2" />
-
-        <div className="col-span-1 sm:col-span-2 font-semibold text-lg text-blue-400 mt-6">Payment History</div>
-        <div className="grid grid-cols-1 gap-4 col-span-1 sm:col-span-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {["PAY_0", "PAY_2", "PAY_3", "PAY_4", "PAY_5", "PAY_6"].map((field) => (
-              <select key={field} name={field} value={formData[field]} onChange={handleChange} className="p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none">
-                <option value="">Select {field}</option>
-                <option value={-1}>Paid Duly</option>
-                <option value={0}>No Delay</option>
-                <option value={1}>Delay 1 Month</option>
-                <option value={2}>Delay 2 Months</option>
-                <option value={3}>Delay 3 Months</option>
-                <option value={4}>Delay 4 Months</option>
-                <option value={5}>Delay 5 Months</option>
-                <option value={6}>Delay 6 Months</option>
+      <form onSubmit={handleSubmit} className="mt-12 flex flex-col gap-12">
+        <section>
+          <h2 className="text-base font-medium">User info</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <Field label="Credit limit (₹)" className="sm:col-span-2 lg:col-span-1">
+              <input name="LIMIT_BAL" type="number" value={formData.LIMIT_BAL} onChange={handleChange} className="field" required />
+            </Field>
+            <Field label="Age">
+              <input name="AGE" type="number" value={formData.AGE} onChange={handleChange} className="field" required />
+            </Field>
+            <Field label="Gender">
+              <select name="SEX" value={formData.SEX} onChange={handleChange} className="field" required>
+                <option value="">Select</option>
+                <option value={1}>Male</option>
+                <option value={2}>Female</option>
               </select>
-            ))}
+            </Field>
+            <Field label="Education">
+              <select name="EDUCATION" value={formData.EDUCATION} onChange={handleChange} className="field" required>
+                <option value="">Select</option>
+                <option value={1}>Graduate school</option>
+                <option value={2}>University</option>
+                <option value={3}>High school</option>
+                <option value={4}>Others</option>
+              </select>
+            </Field>
+            <Field label="Marital status">
+              <select name="MARRIAGE" value={formData.MARRIAGE} onChange={handleChange} className="field" required>
+                <option value="">Select</option>
+                <option value={1}>Married</option>
+                <option value={2}>Single</option>
+                <option value={3}>Others</option>
+              </select>
+            </Field>
           </div>
-        </div>
+        </section>
 
-        <div className="col-span-1 sm:col-span-2 font-semibold text-lg text-blue-400 mt-6">Bills & Payments</div>
-        <div className="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest px-1">Bill Amounts</h4>
-            {["BILL_AMT1", "BILL_AMT2", "BILL_AMT3", "BILL_AMT4", "BILL_AMT5", "BILL_AMT6"].map((field) => (
-              <input key={field} name={field} type="number" value={formData[field]} onChange={handleChange} placeholder={`${field}`} className="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none" />
+        <section>
+          <h2 className="text-base font-medium">Payment history, bills and payments</h2>
+          <div className="mt-4 rounded-xl border border-line bg-card px-4 sm:px-5">
+            <div className="hidden h-11 grid-cols-[120px_1fr_1fr_1fr] items-center gap-4 border-b border-line text-[13px] text-fg-2 sm:grid">
+              <span>Month</span>
+              <span>Repayment status</span>
+              <span>Bill amount (₹)</span>
+              <span>Amount paid (₹)</span>
+            </div>
+            {months.map(({ label, status, bill, paid }) => (
+              <div
+                key={status}
+                className="grid grid-cols-2 items-center gap-x-4 gap-y-2 border-b border-line py-4 last:border-b-0 sm:grid-cols-[120px_1fr_1fr_1fr] sm:py-2"
+              >
+                <span className="col-span-2 text-sm text-fg sm:col-span-1">{label}</span>
+                <select
+                  name={status}
+                  aria-label={`Repayment status, ${label}`}
+                  value={formData[status]}
+                  onChange={handleChange}
+                  className="field col-span-2 sm:col-span-1"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value={-1}>Paid duly</option>
+                  <option value={0}>No delay</option>
+                  <option value={1}>Delayed 1 month</option>
+                  <option value={2}>Delayed 2 months</option>
+                  <option value={3}>Delayed 3 months</option>
+                  <option value={4}>Delayed 4 months</option>
+                  <option value={5}>Delayed 5 months</option>
+                  <option value={6}>Delayed 6 months</option>
+                </select>
+                <input
+                  name={bill}
+                  type="number"
+                  aria-label={`Bill amount in rupees, ${label}`}
+                  placeholder="Bill"
+                  value={formData[bill]}
+                  onChange={handleChange}
+                  className="field"
+                  required
+                />
+                <input
+                  name={paid}
+                  type="number"
+                  aria-label={`Amount paid in rupees, ${label}`}
+                  placeholder="Paid"
+                  value={formData[paid]}
+                  onChange={handleChange}
+                  className="field"
+                  required
+                />
+              </div>
             ))}
           </div>
-          <div className="space-y-4">
-            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest px-1">Payment History</h4>
-            {["PAY_AMT1", "PAY_AMT2", "PAY_AMT3", "PAY_AMT4", "PAY_AMT5", "PAY_AMT6"].map((field) => (
-              <input key={field} name={field} type="number" value={formData[field]} onChange={handleChange} placeholder={`${field}`} className="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 outline-none" />
-            ))}
-          </div>
-        </div>
+        </section>
 
-        <button type="submit" disabled={loading} className="col-span-1 sm:col-span-2 mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl disabled:opacity-50 transition-all shadow-lg active:scale-95">
-          {loading ? "Analyzing Financial Context..." : "Calculate Risk Assessment"}
-        </button>
+        <div className="flex flex-col gap-3">
+          <button type="submit" disabled={loading} className="btn btn-primary w-full sm:w-auto sm:self-start">
+            {loading ? "Analyzing" : "Calculate risk assessment"}
+          </button>
+          {error && <p role="alert" className="text-sm leading-5 text-bad">{error}</p>}
+        </div>
       </form>
 
       {result !== null && (
         <ResultCard
-          title="Risk Assessment Result"
-          message={result.riskLevel === 0 ? "Low Risk - Investment Safe ✅" : "High Risk - Default Chance ⚠️"}
+          className="mt-12 max-w-2xl"
+          title="Risk assessment result"
+          message={result.riskLevel === 0 ? "Low risk, investment safe" : "High risk, chance of default"}
+          stamp={result.riskLevel === 0 ? "Low risk" : "High risk"}
           isPositive={result.riskLevel === 0}
           insight={result.insight}
         />

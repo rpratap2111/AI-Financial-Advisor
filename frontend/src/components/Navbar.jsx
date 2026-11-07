@@ -1,7 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Menu, X } from "lucide-react";
+import GoogleIcon from "./GoogleIcon";
+
+const links = [
+  { to: "/", label: "Home", mobileLabel: "Home" },
+  { to: "/deposit", label: "Deposit", mobileLabel: "Deposit prediction" },
+  { to: "/risk", label: "Risk", mobileLabel: "Risk assessment" },
+  { to: "/chat", label: "AI chat", mobileLabel: "AI chat" },
+];
+
+const Avatar = ({ user, size }) =>
+  user.photoURL ? (
+    <img src={user.photoURL} alt="" className={`${size} rounded-full object-cover`} />
+  ) : (
+    <span className={`${size} flex items-center justify-center rounded-full bg-raised text-xs text-fg-2`}>
+      {user.displayName?.charAt(0) || "?"}
+    </span>
+  );
 
 function Navbar() {
   const { user, loginWithGoogle, logout } = useAuth();
@@ -10,132 +27,102 @@ function Navbar() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <nav className="fixed w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-              <img src="/logo.png" alt="Logo" className="relative w-8 h-8 object-contain" />
-            </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">
-              AI Financial Advisor
-            </span>
-          </Link>
+    <nav className="fixed z-50 w-full border-b border-line bg-page">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/logo-mark.png" alt="" className="h-7 w-7 object-contain" />
+          <span className="text-base font-medium text-fg">AI Financial Advisor</span>
+        </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <div className="flex items-center gap-6">
-              <Link to="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</Link>
-              <Link to="/deposit" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Deposit</Link>
-              <Link to="/risk" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Risk</Link>
-              <Link to="/chat" className="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 hover:from-blue-300 hover:to-emerald-300 transition-all">
-                AI Chat
-              </Link>
-            </div>
-
-            <div className="h-4 w-px bg-white/10"></div>
-
-            {user ? (
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-3">
-                  <img 
-                    src={user.photoURL || "/default-avatar.png"} 
-                    alt="Profile" 
-                    className="w-8 h-8 rounded-full ring-2 ring-white/10" 
-                  />
-                  <span className="hidden lg:block text-sm font-medium text-white/90 truncate max-w-[120px]">
-                    {user.displayName?.split(' ')[0]}
-                  </span>
-                </div>
-                <button 
-                  onClick={logout}
-                  className="text-[10px] font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors py-1 px-3 rounded-full border border-white/10 hover:border-white/30 hover:bg-white/5"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={loginWithGoogle}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-gray-200 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+        {/* Desktop menu */}
+        <div className="hidden items-center gap-8 md:flex">
+          <div className="flex items-center gap-6">
+            {links.map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === "/"}
+                className={({ isActive }) =>
+                  `text-sm transition-colors duration-150 ${isActive ? "text-fg" : "text-fg-2 hover:text-fg"}`
+                }
               >
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-4 h-4" />
-                Sign in
-              </button>
-            )}
+                {label}
+              </NavLink>
+            ))}
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={toggleMenu}
-              className="p-2 text-gray-400 hover:text-white transition-colors"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {user ? (
+            <div className="flex items-center gap-4 border-l border-line pl-8">
+              <div className="flex items-center gap-2">
+                <Avatar user={user} size="h-7 w-7" />
+                <span className="hidden max-w-[120px] truncate text-sm text-fg-2 lg:block">
+                  {user.displayName?.split(" ")[0]}
+                </span>
+              </div>
+              <button
+                onClick={logout}
+                className="text-sm text-fg-2 transition-colors duration-150 hover:text-fg"
+              >
+                Log out
+              </button>
+            </div>
+          ) : (
+            <button onClick={loginWithGoogle} className="btn btn-primary h-9 px-3">
+              <GoogleIcon />
+              Sign in
             </button>
-          </div>
+          )}
         </div>
+
+        {/* Mobile menu toggle */}
+        <button
+          onClick={toggleMenu}
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMenuOpen}
+          className="-mr-2 p-2 text-fg-2 transition-colors duration-150 hover:text-fg md:hidden"
+        >
+          {isMenuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
+        </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 w-full bg-black/95 backdrop-blur-2xl border-b border-white/10 animate-in fade-in slide-in-from-top-4 duration-200">
-          <div className="px-4 pt-2 pb-6 space-y-4">
-            <Link 
-              to="/" 
-              onClick={toggleMenu}
-              className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg"
-            >
-              Home
-            </Link>
-            <Link 
-              to="/deposit" 
-              onClick={toggleMenu}
-              className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg"
-            >
-              Deposit Prediction
-            </Link>
-            <Link 
-              to="/risk" 
-              onClick={toggleMenu}
-              className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg"
-            >
-              Risk Assessment
-            </Link>
-            <Link 
-              to="/chat" 
-              onClick={toggleMenu}
-              className="block px-3 py-2 text-base font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400"
-            >
-              AI Chat
-            </Link>
-            
-            <div className="pt-4 border-t border-white/10">
+        <div className="absolute top-16 left-0 w-full border-b border-line bg-page md:hidden">
+          <div className="flex flex-col gap-1 px-4 pt-2 pb-4">
+            {links.map(({ to, mobileLabel }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === "/"}
+                onClick={toggleMenu}
+                className={({ isActive }) =>
+                  `flex h-10 items-center rounded-lg px-3 text-sm ${isActive ? "bg-raised text-fg" : "text-fg-2"}`
+                }
+              >
+                {mobileLabel}
+              </NavLink>
+            ))}
+
+            <div className="mt-3 border-t border-line pt-4">
               {user ? (
                 <div className="flex items-center justify-between px-3">
-                  <div className="flex items-center gap-3">
-                    <img 
-                      src={user.photoURL || "/default-avatar.png"} 
-                      alt="Profile" 
-                      className="w-10 h-10 rounded-full" 
-                    />
-                    <span className="text-sm font-medium text-white">{user.displayName}</span>
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Avatar user={user} size="h-7 w-7" />
+                    <span className="truncate text-sm text-fg">{user.displayName}</span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => { logout(); toggleMenu(); }}
-                    className="text-xs font-bold text-gray-400 hover:text-red-400 uppercase tracking-widest"
+                    className="shrink-0 pl-4 text-sm text-fg-2"
                   >
-                    Logout
+                    Log out
                   </button>
                 </div>
               ) : (
-                <button 
+                <button
                   onClick={() => { loginWithGoogle(); toggleMenu(); }}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white text-black font-bold rounded-xl"
+                  className="btn btn-primary w-full"
                 >
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+                  <GoogleIcon />
                   Continue with Google
                 </button>
               )}

@@ -12,9 +12,9 @@ function App() {
     <>
       <AuthProvider>
         <Router>
-          <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 to-black text-white">
+          <div className="min-h-screen flex flex-col">
             <Navbar />
-            <main className="flex-grow">
+            <main className="flex-grow pt-16">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/deposit" element={<ProtectedRoute><DepositForm /></ProtectedRoute>} />
@@ -22,9 +22,9 @@ function App() {
                 <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
               </Routes>
           </main>
-          <footer className="w-full text-center py-4 text-xs text-gray-500 mt-auto border-t border-gray-800 bg-black/30 backdrop-blur-sm">
-            <p className="max-w-4xl mx-auto px-4">
-              <strong>Disclaimer:</strong> The predictions and insights provided by this AI Financial Advisor are for informational and educational purposes only. 
+          <footer className="mt-auto w-full border-t border-line py-6 text-xs leading-5 text-fg-3">
+            <p className="mx-auto max-w-6xl px-4 sm:px-6">
+              <span className="text-fg-2">Disclaimer:</span> The predictions and insights provided by this AI Financial Advisor are for informational and educational purposes only. 
               They do not constitute professional financial advice. Always consult with a certified financial planner before making real investment decisions.
             </p>
           </footer>

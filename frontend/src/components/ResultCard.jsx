@@ -1,33 +1,34 @@
-import React from "react";
 import ReactMarkdown from "react-markdown";
+import { PassbookPage, Stamp } from "./Passbook";
 
-const ResultCard = ({ title, result, message, isPositive: forcePositive, insight }) => {
-  const isPositive = forcePositive !== undefined 
-    ? forcePositive 
+const ResultCard = ({ title, result, message, stamp, isPositive: forcePositive, insight, className = "" }) => {
+  const isPositive = forcePositive !== undefined
+    ? forcePositive
     : (result === "yes" || result === 1 || result === "recommended");
 
   return (
-    <div
-      className={`mt-6 p-6 rounded-xl shadow-lg border text-center font-bold ${
-        isPositive 
-          ? "bg-emerald-900/50 border-emerald-500/50 text-emerald-100" 
-          : "bg-red-900/50 border-red-500/50 text-red-100"
-      } backdrop-blur-md`}
-    >
-      <h3 className="text-2xl tracking-wide">{title}</h3>
-      <p className="mt-3 text-xl">
-        {message ? message : (isPositive ? "✅ Positive Recommendation" : "⚠️ High Risk / Not Recommended")} 
-      </p>
+    <PassbookPage className={className}>
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-paper-rule py-6 pr-4 pl-12 sm:pr-6 sm:pl-14">
+        <div className="min-w-0 flex-1 basis-48">
+          <h3 className="text-[13px] leading-4 text-paper-ink-2">{title}</h3>
+          <p className="mt-2 text-xl leading-7 font-medium">
+            {message || (isPositive ? "Positive recommendation" : "High risk, not recommended")}
+          </p>
+        </div>
+        <Stamp tone={isPositive ? "good" : "bad"}>
+          {stamp || (isPositive ? "Recommended" : "Not recommended")}
+        </Stamp>
+      </div>
 
       {insight && (
-        <div className="mt-6 p-5 bg-black/40 rounded-lg text-left shadow-inner border border-white/10 markdown-body">
-          <h4 className="text-sm uppercase tracking-wider text-gray-400 mb-2 font-sans font-bold">AI Advisor Insight</h4>
-          <div className="text-gray-200 text-sm leading-relaxed font-normal">
+        <div className="py-6 pr-4 pl-12 sm:pr-6 sm:pl-14">
+          <h4 className="text-[13px] leading-4 text-paper-ink-2">AI advisor insight</h4>
+          <div className="markdown-body handwritten mt-3">
             <ReactMarkdown>{insight}</ReactMarkdown>
           </div>
         </div>
       )}
-    </div>
+    </PassbookPage>
   );
 };
 
